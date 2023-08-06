@@ -1,0 +1,29 @@
+name: Build & Test
+
+on: [push]
+
+jobs:
+  build_and_test:
+    name: Rust project
+    strategy:
+      matrix:
+        # we only run on nightly, since leptos needs it 
+        rust: [nightly]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          target: wasm32-unknown-unknown
+      - run: cargo install cargo-leptos
+      - uses: actions-rs/cargo@v1
+        name: Build Library
+        with:
+          command: leptos
+          args: build --workspace --release --all-features
+      - uses: actions-rs/cargo@v1
+        name: Run Tests
+        with:
+          command: test
+          args: --workspace --release --all-features
