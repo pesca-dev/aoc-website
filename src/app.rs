@@ -32,7 +32,7 @@ fn HomePage(cx: Scope) -> impl IntoView {
     let on_click = move |_| set_count.update(|count| *count += 1);
 
     view! { cx,
-        <h1>"Here should be information about CAU AoC"</h1>
+        <h1>"AoC CAU"</h1>
         <button on:click=on_click>"Click Me: " {count}</button>
     }
 }

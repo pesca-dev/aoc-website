@@ -17,7 +17,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           target: wasm32-unknown-unknown
       - name: Update Dependencies
-        run: sudo apt update && sudo apt install pkg-config 
+        run: sudo apt update && sudo apt install pkg-config libssl-dev
       - name: Install Cargo-Leptos
         run: cargo install cargo-leptos
       - uses: actions-rs/cargo@v1
