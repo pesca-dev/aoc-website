@@ -17,6 +17,8 @@ jobs:
           toolchain: ${{ matrix.rust }}
           target: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
+        with: 
+          cache-on-failure: true
       - name: Update Dependencies
         run: sudo apt update && sudo apt install pkg-config libssl-dev
       - name: Install Cargo-Leptos
