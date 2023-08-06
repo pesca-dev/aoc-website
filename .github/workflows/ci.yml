@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build_and_test:
-    name: Rust project
+    name: Build & Test
     strategy:
       matrix:
         # we only run on nightly, since leptos needs it 
@@ -16,7 +16,10 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           target: wasm32-unknown-unknown
-      - run: cargo install cargo-leptos
+      - name: Update Dependencies
+        run: sudo apt update && sudo apt install pkg-config 
+      - name: Install Cargo-Leptos
+        run: cargo install cargo-leptos
       - uses: actions-rs/cargo@v1
         name: Build Library
         with:
