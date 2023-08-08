@@ -31,10 +31,13 @@ fn HomePage(cx: Scope) -> impl IntoView {
 
     let on_click = move |_| set_count.update(|count| *count += 1);
 
+    let doubled = move || count() * 2;
+
     view! { cx,
         <h1>"Advent of Code - CAU Discord"</h1>
         <button on:click=on_click>"Click Me"</button>
         <label>{count}</label>
+        <label>"Double: " {doubled}</label>
     }
 }
 
