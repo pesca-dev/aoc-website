@@ -12,11 +12,14 @@ pub fn App(cx: Scope) -> impl IntoView {
 
         <Title text="Advent of Code"/>
 
+        <Meta name="color-scheme" content="light" />
+
         // content for this welcome page
         <Router>
+            <Navigation />
             <main>
                 <Routes>
-                    <Route path="" view=HomePage/>
+                    <Route path="" view=CodeView/>
                     <Route path="/*any" view=NotFound/>
                 </Routes>
             </main>
@@ -24,20 +27,77 @@ pub fn App(cx: Scope) -> impl IntoView {
     }
 }
 
-/// Renders the home page of your application.
 #[component]
-fn HomePage(cx: Scope) -> impl IntoView {
-    let (count, set_count) = create_signal(cx, 0);
-
-    let on_click = move |_| set_count.update(|count| *count += 1);
-
-    let doubled = move || count() * 2;
-
+fn CodeView(cx: Scope) -> impl IntoView {
     view! { cx,
-        <h1>"Advent of Code - CAU Discord"</h1>
-        <button on:click=on_click>"Click Me"</button>
-        <label>{count}</label>
-        <label>"Double: " {doubled}</label>
+        <Sidebar />
+        <section class="code-overview">
+            <div class="code-snippet">
+                Code Snippet
+            </div>
+            <div class="code-snippet">
+                Code Snippet
+            </div>
+            <div class="code-snippet">
+                Code Snippet
+            </div>
+        </section>
+    }
+}
+
+#[component]
+fn Navigation(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <nav>
+            <div class="logo">
+                "LOGO"
+            </div>
+            <ul>
+                <li>
+                    <a href="#">
+                        "Overview"
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        "Last Years"
+                    </a>
+                </li>
+            </ul>
+            <div class="profile">
+                "Profile"
+            </div>
+        </nav>
+    }
+}
+
+#[component]
+fn Sidebar(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <section class="sidebar">
+            <header><h3>Users</h3></header>
+            <div class="day">
+                <label for="day-select">Day</label>
+                <select name="day" id="day-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <ul>
+                <li class="active"><a href="#">H1ghBre4k3r</a></li>
+                <li><a href="#">H1ghBre4k3r</a></li>
+                <li><a href="#">H1ghBre4k3r</a></li>
+                <li><a href="#">H1ghBre4k3r</a></li>
+                <li><a href="#">H1ghBre4k3r</a></li>
+                <li><a href="#">H1ghBre4k3r</a></li>
+            </ul>
+        </section>
     }
 }
 
@@ -59,6 +119,8 @@ fn NotFound(cx: Scope) -> impl IntoView {
     }
 
     view! { cx,
-        <h1>"Not Found"</h1>
+        <section>
+            <h1>"Not Found"</h1>
+        </section>
     }
 }
