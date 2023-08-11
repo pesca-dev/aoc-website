@@ -21,7 +21,7 @@ jobs:
           cache-on-failure: true
           cache-all-crates: true
       - name: Update Dependencies
-        run: sudo apt update && sudo apt install pkg-config libssl-dev binaryen
+        run: sudo apt update && sudo apt install pkg-config libssl-dev binaryen -y
       - name: Install Cargo-Leptos
         run: cargo install cargo-leptos
       - uses: actions-rs/cargo@v1
