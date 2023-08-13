@@ -1,4 +1,7 @@
 $nav-height: 64px;
+$nav-margin: 16px;
+$body-padding-top: $nav-height + 2 * $nav-margin;
+
 $nav-horizontal-padding: 50px;
 
 body {
@@ -17,12 +20,14 @@ a {
 }
 
 nav {
+    margin: $nav-margin;
     height: $nav-height;
-    width: 100%;
+    border-radius: 8px;
+    width: calc(100% - $nav-margin * 2);
     position: fixed;
     display: flex; 
     background-color: white;
-    box-shadow: 0px 1px 10px #ddd;
+    box-shadow: 0px 0px 10px #ddd;
 
     > div {
         display: flex;
@@ -52,16 +57,20 @@ nav {
 
 main {
     display: flex;
+    padding-top: $body-padding-top;
     flex: 1;
 
     .sidebar {
         $sidebar-padding: 20px;
 
         width: 200px;
-        box-shadow: 1px 0px 10px #ddd;
         padding: $sidebar-padding;
-        padding-top: $sidebar-padding + $nav-height - 10px;
+        border-radius: 8px;
+        margin: 16px;
+        box-shadow: 1px 0px 10px #ddd;
         overflow: auto;
+
+        height: fit-content;
 
         .day {
             label {
@@ -88,7 +97,6 @@ main {
 
     section:not(.sidebar) {
         flex: 1;
-        padding-top: $nav-height;
         display: flex;
         flex-direction: column;
     }
