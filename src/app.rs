@@ -45,7 +45,6 @@ fn CodeView(cx: Scope) -> impl IntoView {
     let query = use_params_map(cx);
     let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
 
-    log!("current user: {}", user());
     view! { cx,
         <Sidebar />
         <Show when=move || user().trim() != "" fallback=move |cx| view! { cx, <section>Select a user...</section>}>
@@ -100,30 +99,69 @@ fn Navigation(cx: Scope) -> impl IntoView {
         <nav>
             <div class="logo">
                 <a href="/">
-                    "LOGO"
+                    AoC
                 </a>
             </div>
             <ul>
                 <li>
                     <a href="/">
-                        "Home"
+                        <span class="icon"><Svg id="home"/></span>
+                        <span class="nav-label">Home</span>
                     </a>
                 </li>
                 <li>
                     <a href="/code">
-                        "Code"
+                        <span class="icon"><Svg id="code-brackets"/></span>
+                        <span class="nav-label">Code</span>
                     </a>
                 </li>
                 <li>
                     <a href="/last-years">
-                        "Last Years"
+                        <span class="nav-label">Last Years</span>
                     </a>
                 </li>
             </ul>
             <div class="profile">
-                "Profile"
+                <details>
+                    <summary>
+                        <span class="nav-label">H1ghBre4k3r</span>
+                        <span class="profile-picture">
+                            <Svg id="user-circle" />
+                        </span>
+                    </summary>
+                    <aside>
+                        <ul>
+                            <li>
+                                <a href="/profile">
+                                    <span class="icon"><Svg id="tools" /></span>Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/settings">
+                                    <span class="icon"><Svg id="settings" /></span>Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/logout">
+                                    <span class="icon"><Svg id="logout" /></span>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </aside>
+                </details>
             </div>
         </nav>
+    }
+}
+
+#[component]
+fn Svg<'a>(cx: Scope, id: &'a str) -> impl IntoView {
+    let url = format!("/assets/icons.svg#{id}");
+
+    view! { cx,
+        <svg viewBox="0 0 24 24">
+            <use_ href=url/>
+        </svg>
     }
 }
 
