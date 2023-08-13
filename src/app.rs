@@ -14,12 +14,12 @@ pub fn App(cx: Scope) -> impl IntoView {
 
         <Meta name="color-scheme" content="light" />
 
-        // content for this welcome page
         <Router>
             <Navigation />
             <main>
                 <Routes>
-                    <Route path="" view=CodeView/>
+                    <Route path="" view=MainView/>
+                    <Route path="/code" view=CodeView/>
                     <Route path="/*any" view=NotFound/>
                 </Routes>
             </main>
@@ -28,12 +28,24 @@ pub fn App(cx: Scope) -> impl IntoView {
 }
 
 #[component]
+fn MainView(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <section>
+            <h1>Advent of Code</h1>
+        </section>
+    }
+}
+
+#[component]
 fn CodeView(cx: Scope) -> impl IntoView {
+    let query = use_query_map(cx);
+    let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
+
     view! { cx,
         <Sidebar />
         <section class="code-overview">
             <div class="code-snippet">
-                Code Snippet
+                {user}
             </div>
             <div class="code-snippet">
                 Code Snippet
@@ -50,16 +62,23 @@ fn Navigation(cx: Scope) -> impl IntoView {
     view! { cx,
         <nav>
             <div class="logo">
-                "LOGO"
+                <a href="/">
+                    "LOGO"
+                </a>
             </div>
             <ul>
                 <li>
-                    <a href="#">
-                        "Overview"
+                    <a href="/">
+                        "Home"
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/code">
+                        "Code"
+                    </a>
+                </li>
+                <li>
+                    <a href="/last-years">
                         "Last Years"
                     </a>
                 </li>
@@ -73,6 +92,31 @@ fn Navigation(cx: Scope) -> impl IntoView {
 
 #[component]
 fn Sidebar(cx: Scope) -> impl IntoView {
+    let query = use_query_map(cx);
+    let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
+
+    let names = vec![
+        "h1ghbre4k3r",
+        "dobiko",
+        "dormanil",
+        "maclement",
+        "melf",
+        "zihark",
+        "sebfisch",
+        "xtay2",
+        "estugon",
+        "fwcd",
+        "b3z",
+        "felioh",
+        "h1tchhiker",
+        "hendrick404",
+        "tuhhy",
+        "yorick",
+        "skgland",
+    ];
+
+    let (users, _) = create_signal(cx, names);
+
     view! { cx,
         <section class="sidebar">
             <header><h3>Users</h3></header>
@@ -90,12 +134,14 @@ fn Sidebar(cx: Scope) -> impl IntoView {
                 </select>
             </div>
             <ul>
-                <li class="active"><a href="#">H1ghBre4k3r</a></li>
-                <li><a href="#">H1ghBre4k3r</a></li>
-                <li><a href="#">H1ghBre4k3r</a></li>
-                <li><a href="#">H1ghBre4k3r</a></li>
-                <li><a href="#">H1ghBre4k3r</a></li>
-                <li><a href="#">H1ghBre4k3r</a></li>
+                <For each=users key=|name| name.to_owned() view=move|cx, name| {
+                    let is_active = move || name == user();
+                    view! {cx,
+                        <li>
+                            <a href="?user={name}" class:active=is_active>{name}</a>
+                        </li>
+                    }
+                }/>
             </ul>
         </section>
     }

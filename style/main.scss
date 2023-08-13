@@ -65,7 +65,7 @@ main {
 
         width: 200px;
         padding: $sidebar-padding;
-        border-radius: 8px;
+        border-radius: 4px;
         margin: 16px;
         box-shadow: 1px 0px 10px #ddd;
         overflow: auto;
@@ -83,14 +83,19 @@ main {
             padding: 0;
             text-align: left;
 
-            li {
+            li > a {
+                display: block;
                 margin: 16px auto;
                 padding: 12px;
                 border-radius: 8px;
-            }
 
-            li.active {
-                background-color: #eee;
+                &:hover {
+                    background-color: #efefef;
+                }
+
+                &.active {
+                    background-color: #ddd;
+                }
             }
         }
     }
