@@ -3,7 +3,7 @@ name: Deploy
 on:
   workflow_run:
     workflows: 
-      -
+      - Image
     types: 
       - completed
     branches: 
