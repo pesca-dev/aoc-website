@@ -40,6 +40,178 @@ fn MainView(cx: Scope) -> impl IntoView {
     }
 }
 
+#[component]
+fn CodeView(cx: Scope) -> impl IntoView {
+    let query = use_params_map(cx);
+    let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
+
+    log!("current user: {}", user());
+    view! { cx,
+        <Sidebar />
+        <Show when=move || user().trim() != "" fallback=move |cx| view! { cx, <section>Select a user...</section>}>
+            {highlight_all()}
+            <section class="code-overview">
+                <ul>
+                    <li>
+                        <div class="code-snippet">
+                            <details open>
+                                <summary>
+                                    {user} Part 1
+                                </summary>
+                                <pre>
+                                    <code class="language-rust">{CODE.trim()}</code>
+                                </pre>
+                            </details>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="code-snippet">
+                            <details>
+                                <summary>
+                                    {user} Part 2
+                                </summary>
+                                <pre>
+                                    <code class="language-rust">{CODE.trim()}</code>
+                                </pre>
+                            </details>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </Show>
+    }
+}
+
+#[cfg(feature = "hydrate")]
+use wasm_bindgen::prelude::wasm_bindgen;
+#[cfg(feature = "hydrate")]
+#[wasm_bindgen(module = "/js/prism.js")]
+extern "C" {
+    pub fn highlight_all();
+}
+
+#[cfg(not(feature = "hydrate"))]
+#[allow(dead_code)]
+pub fn highlight_all() {}
+
+#[component]
+fn Navigation(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <nav>
+            <div class="logo">
+                <a href="/">
+                    "LOGO"
+                </a>
+            </div>
+            <ul>
+                <li>
+                    <a href="/">
+                        "Home"
+                    </a>
+                </li>
+                <li>
+                    <a href="/code">
+                        "Code"
+                    </a>
+                </li>
+                <li>
+                    <a href="/last-years">
+                        "Last Years"
+                    </a>
+                </li>
+            </ul>
+            <div class="profile">
+                "Profile"
+            </div>
+        </nav>
+    }
+}
+
+#[component]
+fn Sidebar(cx: Scope) -> impl IntoView {
+    let params = use_params_map(cx);
+    let user = move || params.with(|params| params.get("user").cloned().unwrap_or_default());
+
+    let names = vec![
+        "h1ghbre4k3r",
+        "dobiko",
+        "dormanil",
+        "maclement",
+        "melf",
+        "zihark",
+        "sebfisch",
+        "xtay2",
+        "estugon",
+        "fwcd",
+        "b3z",
+        "felioh",
+        "h1tchhiker",
+        "hendrick404",
+        "tuhhy",
+        "yorick",
+        "skgland",
+    ];
+
+    let (users, _) = create_signal(cx, names);
+
+    view! { cx,
+        <section class="sidebar">
+            <div>
+                <header><h3>Users</h3></header>
+                <div class="day">
+                    <label for="day-select">Day</label>
+                    <select name="day" id="day-select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+                <ul>
+                    <For each=users key=|name| name.to_owned() view=move|cx, name| {
+                        let is_active = move || name == user();
+                        let link = move || format!("/code/{name}");
+
+                        view! {cx,
+                            <li>
+                                <a href=link class:active=is_active>{name}</a>
+                            </li>
+                        }
+                    }/>
+                </ul>
+            </div>
+        </section>
+    }
+}
+
+/// 404 - Not Found
+#[component]
+fn NotFound(cx: Scope) -> impl IntoView {
+    // set an HTTP status code 404
+    // this is feature gated because it can only be done during
+    // initial server-side rendering
+    // if you navigate to the 404 page subsequently, the status
+    // code will not be set because there is not a new HTTP request
+    // to the server
+    #[cfg(feature = "ssr")]
+    {
+        // this can be done inline because it's synchronous
+        // if it were async, we'd use a server function
+        let resp = expect_context::<leptos_actix::ResponseOptions>(cx);
+        resp.set_status(actix_web::http::StatusCode::NOT_FOUND);
+    }
+
+    view! { cx,
+        <section>
+            <h1>"Not Found"</h1>
+        </section>
+    }
+}
+
 const CODE: &str = r#"
 use std::{error::Error, str::FromStr};
 
@@ -329,144 +501,3 @@ move 1 from 1 to 2";
     }
 }
 "#;
-
-#[component]
-fn CodeView(cx: Scope) -> impl IntoView {
-    let query = use_params_map(cx);
-    let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
-
-    view! { cx,
-        <Sidebar />
-        <section class="code-overview">
-            <div class="code-snippet">
-                <details>
-                    <summary>
-                        {user}
-                    </summary>
-                    <pre>
-                        <code class="language-rust">{CODE.trim()}</code>
-                    </pre>
-                </details>
-            </div>
-            <div class="code-snippet">
-                Code Snippet
-            </div>
-        </section>
-    }
-}
-
-#[component]
-fn Navigation(cx: Scope) -> impl IntoView {
-    view! { cx,
-        <nav>
-            <div class="logo">
-                <a href="/">
-                    "LOGO"
-                </a>
-            </div>
-            <ul>
-                <li>
-                    <a href="/">
-                        "Home"
-                    </a>
-                </li>
-                <li>
-                    <a href="/code">
-                        "Code"
-                    </a>
-                </li>
-                <li>
-                    <a href="/last-years">
-                        "Last Years"
-                    </a>
-                </li>
-            </ul>
-            <div class="profile">
-                "Profile"
-            </div>
-        </nav>
-    }
-}
-
-#[component]
-fn Sidebar(cx: Scope) -> impl IntoView {
-    let params = use_params_map(cx);
-    let user = move || params.with(|params| params.get("user").cloned().unwrap_or_default());
-
-    let names = vec![
-        "h1ghbre4k3r",
-        "dobiko",
-        "dormanil",
-        "maclement",
-        "melf",
-        "zihark",
-        "sebfisch",
-        "xtay2",
-        "estugon",
-        "fwcd",
-        "b3z",
-        "felioh",
-        "h1tchhiker",
-        "hendrick404",
-        "tuhhy",
-        "yorick",
-        "skgland",
-    ];
-
-    let (users, _) = create_signal(cx, names);
-
-    view! { cx,
-        <section class="sidebar">
-            <header><h3>Users</h3></header>
-            <div class="day">
-                <label for="day-select">Day</label>
-                <select name="day" id="day-select">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                </select>
-            </div>
-            <ul>
-                <For each=users key=|name| name.to_owned() view=move|cx, name| {
-                    let is_active = move || name == user();
-                    let link = move || format!("/code/{name}");
-
-                    view! {cx,
-                        <li>
-                            <a href=link class:active=is_active>{name}</a>
-                        </li>
-                    }
-                }/>
-            </ul>
-        </section>
-    }
-}
-
-/// 404 - Not Found
-#[component]
-fn NotFound(cx: Scope) -> impl IntoView {
-    // set an HTTP status code 404
-    // this is feature gated because it can only be done during
-    // initial server-side rendering
-    // if you navigate to the 404 page subsequently, the status
-    // code will not be set because there is not a new HTTP request
-    // to the server
-    #[cfg(feature = "ssr")]
-    {
-        // this can be done inline because it's synchronous
-        // if it were async, we'd use a server function
-        let resp = expect_context::<leptos_actix::ResponseOptions>(cx);
-        resp.set_status(actix_web::http::StatusCode::NOT_FOUND);
-    }
-
-    view! { cx,
-        <section>
-            <h1>"Not Found"</h1>
-        </section>
-    }
-}
