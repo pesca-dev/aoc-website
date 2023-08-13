@@ -11,6 +11,7 @@ RUN cargo leptos build --release
 ########################################
 
 FROM scratch as app
+LABEL org.opencontainers.image.source="https://github.com/pesca-dev/aoc-website"
 
 ENV LEPTOS_OUTPUT_NAME=aoc_website
 ENV LEPTOS_SITE_ROOT=site
