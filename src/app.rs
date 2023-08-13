@@ -13,6 +13,7 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Title text="Advent of Code"/>
 
         <Meta name="color-scheme" content="light" />
+        <Meta name="viewport" content="width=device-width; initial-scale=1.0;" />
 
         <Script src="https://unpkg.com/prismjs@1.29.0/components/prism-core.min.js"/>
         <Script src="https://unpkg.com/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"/>
