@@ -1,7 +1,5 @@
-mod navigation;
-mod sidebar;
-mod svg;
+mod code;
+mod general;
 
-pub use self::navigation::*;
-pub use self::sidebar::*;
-pub use self::svg::*;
+pub use self::code::*;
+pub use self::general::*;
