@@ -1,5 +1,7 @@
 @import "prism";
 
+$content-width: 1400px;
+
 $default-margin: 16px;
 
 $nav-height: 64px;
@@ -20,7 +22,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    max-width: 2000px;
+    max-width: $content-width;
 }
 
 a {
@@ -32,7 +34,7 @@ nav {
     margin: $nav-margin;
     height: $nav-height;
     border-radius: 8px;
-    width: calc(min(100%, 2000px) - $nav-margin * 2);
+    width: calc(min(100%, $content-width) - $nav-margin * 2);
     position: fixed;
     z-index: 99;
     display: flex; 
@@ -238,7 +240,7 @@ main {
     }
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: $content-width) {
     nav {
         .logo {
             display: none;

@@ -4,7 +4,7 @@ use leptos_router::*;
 
 use crate::{
     components::Navigation,
-    views::{CodeView, HomeView},
+    views::{CodeView, HomeView, ProfileView, SettingsView},
 };
 
 #[component]
@@ -28,6 +28,8 @@ pub fn App(cx: Scope) -> impl IntoView {
             <main>
                 <Routes>
                     <Route path="" view=HomeView/>
+                    <Route path="/profile" view=ProfileView/>
+                    <Route path="/settings" view=SettingsView/>
                     <Route path="/code" view=CodeView/>
                     <Route path="/code/:user" view=CodeView/>
                     <Route path="/*any" view=NotFound/>
