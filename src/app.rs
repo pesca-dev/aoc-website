@@ -2,6 +2,11 @@ use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
 
+use crate::{
+    components::Navigation,
+    views::{CodeView, HomeView},
+};
+
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
@@ -22,208 +27,13 @@ pub fn App(cx: Scope) -> impl IntoView {
             <Navigation />
             <main>
                 <Routes>
-                    <Route path="" view=MainView/>
+                    <Route path="" view=HomeView/>
                     <Route path="/code" view=CodeView/>
                     <Route path="/code/:user" view=CodeView/>
                     <Route path="/*any" view=NotFound/>
                 </Routes>
             </main>
         </Router>
-    }
-}
-
-#[component]
-fn MainView(cx: Scope) -> impl IntoView {
-    view! { cx,
-        <section>
-            <h1>Advent of Code</h1>
-        </section>
-    }
-}
-
-#[component]
-fn CodeView(cx: Scope) -> impl IntoView {
-    let query = use_params_map(cx);
-    let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
-
-    view! { cx,
-        <Sidebar />
-        <Show when=move || user().trim() != "" fallback=move |cx| view! { cx, <section>Select a user...</section>}>
-            {highlight_all()}
-            <section class="code-overview">
-                <ul>
-                    <li>
-                        <div class="code-snippet">
-                            <details open>
-                                <summary>
-                                    {user} Part 1
-                                </summary>
-                                <pre>
-                                    <code class="language-rust">{CODE.trim()}</code>
-                                </pre>
-                            </details>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="code-snippet">
-                            <details>
-                                <summary>
-                                    {user} Part 2
-                                </summary>
-                                <pre>
-                                    <code class="language-rust">{CODE.trim()}</code>
-                                </pre>
-                            </details>
-                        </div>
-                    </li>
-                </ul>
-            </section>
-        </Show>
-    }
-}
-
-#[cfg(feature = "hydrate")]
-use wasm_bindgen::prelude::wasm_bindgen;
-#[cfg(feature = "hydrate")]
-#[wasm_bindgen(module = "/js/prism.js")]
-extern "C" {
-    pub fn highlight_all();
-}
-
-#[cfg(not(feature = "hydrate"))]
-#[allow(dead_code)]
-pub fn highlight_all() {}
-
-#[component]
-fn Navigation(cx: Scope) -> impl IntoView {
-    view! { cx,
-        <nav>
-            <div class="logo">
-                <a href="/">
-                    AoC
-                </a>
-            </div>
-            <ul>
-                <li>
-                    <a href="/">
-                        <span class="icon"><Svg id="home"/></span>
-                        <span class="nav-label">Home</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/code">
-                        <span class="icon"><Svg id="code-brackets"/></span>
-                        <span class="nav-label">Code</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/last-years">
-                        <span class="nav-label">Last Years</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="profile">
-                <details>
-                    <summary>
-                        <span class="nav-label">H1ghBre4k3r</span>
-                        <span class="profile-picture">
-                            <Svg id="user-circle" />
-                        </span>
-                    </summary>
-                    <aside>
-                        <ul>
-                            <li>
-                                <a href="/profile">
-                                    <span class="icon"><Svg id="tools" /></span>Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/settings">
-                                    <span class="icon"><Svg id="settings" /></span>Settings
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/logout">
-                                    <span class="icon"><Svg id="logout" /></span>Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </aside>
-                </details>
-            </div>
-        </nav>
-    }
-}
-
-#[component]
-fn Svg<'a>(cx: Scope, id: &'a str) -> impl IntoView {
-    let url = format!("/assets/icons.svg#{id}");
-
-    view! { cx,
-        <svg viewBox="0 0 24 24">
-            <use_ href=url/>
-        </svg>
-    }
-}
-
-#[component]
-fn Sidebar(cx: Scope) -> impl IntoView {
-    let params = use_params_map(cx);
-    let user = move || params.with(|params| params.get("user").cloned().unwrap_or_default());
-
-    let names = vec![
-        "h1ghbre4k3r",
-        "dobiko",
-        "dormanil",
-        "maclement",
-        "melf",
-        "zihark",
-        "sebfisch",
-        "xtay2",
-        "estugon",
-        "fwcd",
-        "b3z",
-        "felioh",
-        "h1tchhiker",
-        "hendrick404",
-        "tuhhy",
-        "yorick",
-        "skgland",
-    ];
-
-    let (users, _) = create_signal(cx, names);
-
-    view! { cx,
-        <section class="sidebar">
-            <div>
-                <header><h3>Users</h3></header>
-                <div class="day">
-                    <label for="day-select">Day</label>
-                    <select name="day" id="day-select">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                    </select>
-                </div>
-                <ul>
-                    <For each=users key=|name| name.to_owned() view=move|cx, name| {
-                        let is_active = move || name == user();
-                        let link = move || format!("/code/{name}");
-
-                        view! {cx,
-                            <li>
-                                <a href=link class:active=is_active>{name}</a>
-                            </li>
-                        }
-                    }/>
-                </ul>
-            </div>
-        </section>
     }
 }
 
@@ -251,7 +61,7 @@ fn NotFound(cx: Scope) -> impl IntoView {
     }
 }
 
-const CODE: &str = r#"
+pub const CODE: &str = r#"
 use std::{error::Error, str::FromStr};
 
 use aoc_runner_derive::{aoc, aoc_generator};

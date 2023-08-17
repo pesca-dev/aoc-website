@@ -8,6 +8,10 @@ $body-padding-top: $nav-height + 2 * $nav-margin;
 
 $nav-horizontal-padding: 50px;
 
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     padding: 0;
     margin: auto;
@@ -17,7 +21,6 @@ body {
     flex-direction: column;
     min-height: 100vh;
     max-width: 2000px;
-    scrollbar-gutter: stable;
 }
 
 a {
@@ -88,6 +91,10 @@ nav {
                 white-space: nowrap;
 
                 --icon-color: #bbb;
+
+                &::-webkit-details-marker {
+                    display: none;
+                }
 
                 .profile-picture {
                     $icon-size: 32px;
