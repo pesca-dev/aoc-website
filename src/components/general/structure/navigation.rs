@@ -40,14 +40,14 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                             view!{ cx,
                                 <details>
                                     <summary>
-                                        <span class="nav-label">{user}</span>
+                                        <span class="nav-label">{user.clone()}</span>
                                         <span class="profile-picture">
                                             <Svg id="user-circle" />
                                         </span>
                                     </summary>
                                     <aside>
                                     {move || {
-                                        if let Some(Ok(_)) = auth.user.read(cx) {
+                                        if let Some(Ok(_)) = user {
                                             view!{ cx,
                                                 <ul>
                                                     <li>
