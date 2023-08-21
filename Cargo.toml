@@ -8,7 +8,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 actix-files = { version = "0.6", optional = true }
-actix-web = { version = "4", optional = true, features = ["macros"] }
+actix-web = { version = "4", optional = true, features = ["macros", "cookies", "secure-cookies"] }
 console_error_panic_hook = "0.1"
 cfg-if = "1"
 http = { version = "0.2", optional = true }
@@ -17,18 +17,29 @@ leptos_meta = { version = "0.4", features = ["nightly"] }
 leptos_actix = { version = "0.4", optional = true }
 leptos_router = { version = "0.4", features = ["nightly"] }
 wasm-bindgen = "=0.2.87"
+serde = "1.0.183"
+web-sys = { version = "0.3.64", features = ["HtmlDocument", "Window", "Storage"] }
+actix-session = { version = "0.7.2", optional = true, features = ["cookie-session"] }
+actix-identity = { version = "0.5.2", optional = true }
 
 [features]
+# default = ["csr"]
 csr = ["leptos/csr", "leptos_meta/csr", "leptos_router/csr"]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
 ssr = [
   "dep:actix-files",
   "dep:actix-web",
+  "dep:actix-session",
+  "dep:actix-identity",
   "dep:leptos_actix",
   "leptos/ssr",
   "leptos_meta/ssr",
   "leptos_router/ssr",
 ]
+
+# [package.metadata.cargo-all-features]
+# denylist = ["axum", "tower", "tower-http", "tokio", "sqlx", "leptos_axum", "femark", "chrono", "argon2","rand", "rand_core"]
+# skip_feature_sets = [["csr", "ssr"], ["csr", "hydrate"], ["ssr", "hydrate"]]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
 [profile.wasm-release]

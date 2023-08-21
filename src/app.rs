@@ -4,7 +4,8 @@ use leptos_router::*;
 
 use crate::{
     components::Navigation,
-    views::{CodeView, HomeView, ProfileView, SettingsView},
+    contexts::AuthContextProvider,
+    views::{CodeView, HomeView, LoginView, LogoutView, ProfileView, SettingsView},
 };
 
 #[component]
@@ -23,19 +24,23 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Script src="https://unpkg.com/prismjs@1.29.0/components/prism-core.min.js"/>
         <Script src="https://unpkg.com/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"/>
 
-        <Router>
-            <Navigation />
-            <main>
-                <Routes>
-                    <Route path="" view=HomeView/>
-                    <Route path="/profile" view=ProfileView/>
-                    <Route path="/settings" view=SettingsView/>
-                    <Route path="/code" view=CodeView/>
-                    <Route path="/code/:user" view=CodeView/>
-                    <Route path="/*any" view=NotFound/>
-                </Routes>
-            </main>
-        </Router>
+        <AuthContextProvider>
+            <Router>
+                <Navigation />
+                <main>
+                    <Routes>
+                        <Route path="" view=HomeView ssr=SsrMode::Async/>
+                        <Route path="/profile" view=ProfileView ssr=SsrMode::Async/>
+                        <Route path="/settings" view=SettingsView ssr=SsrMode::Async/>
+                        <Route path="/login" view=LoginView ssr=SsrMode::Async/>
+                        <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
+                        <Route path="/code" view=CodeView ssr=SsrMode::Async/>
+                        <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>
+                        <Route path="/*any" view=NotFound ssr=SsrMode::Async/>
+                    </Routes>
+                </main>
+            </Router>
+        </AuthContextProvider>
     }
 }
 

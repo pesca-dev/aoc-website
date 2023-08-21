@@ -2,7 +2,14 @@
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     use actix_files::Files;
-    use actix_web::*;
+    use actix_identity::IdentityMiddleware;
+    use actix_session::{
+        config::PersistentSession, storage::CookieSessionStore, SessionMiddleware,
+    };
+    use actix_web::{
+        cookie::{time, Key},
+        web, App, HttpServer,
+    };
     use aoc_website::app::*;
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
@@ -11,6 +18,8 @@ async fn main() -> std::io::Result<()> {
     let addr = conf.leptos_options.site_addr;
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(|cx| view! { cx, <App/> });
+
+    let secret_key = Key::generate();
 
     HttpServer::new(move || {
         let leptos_options = &conf.leptos_options;
@@ -30,6 +39,22 @@ async fn main() -> std::io::Result<()> {
                 |cx| view! { cx, <App/> },
             )
             .app_data(web::Data::new(leptos_options.to_owned()))
+            .wrap(IdentityMiddleware::default())
+            // The identity system is built on top of sessions. You must install the session
+            // middleware to leverage `actix-identity`. The session middleware must be mounted
+            // AFTER the identity middleware: `actix-web` invokes middleware in the OPPOSITE
+            // order of registration when it receives an incoming request.
+            // .wrap(SessionMiddleware::new(
+            //     CookieSessionStore::default(),
+            //     secret_key.clone(),
+            // ))
+            .wrap(
+                SessionMiddleware::builder(CookieSessionStore::default(), secret_key.clone())
+                    .session_lifecycle(
+                        PersistentSession::default().session_ttl(time::Duration::weeks(4)),
+                    )
+                    .build(),
+            )
         //.wrap(middleware::Compress::default())
     })
     .bind(&addr)?
