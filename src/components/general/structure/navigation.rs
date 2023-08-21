@@ -1,9 +1,11 @@
 use leptos::*;
 
-use crate::components::Svg;
+use crate::{components::Svg, contexts::use_auth};
 
 #[component]
 pub fn Navigation(cx: Scope) -> impl IntoView {
+    let auth = use_auth(cx);
+
     view! { cx,
         <nav>
             <div class="logo">
@@ -31,33 +33,57 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                 </li>
             </ul>
             <div class="profile">
-                <details>
-                    <summary>
-                        <span class="nav-label">H1ghBre4k3r</span>
-                        <span class="profile-picture">
-                            <Svg id="user-circle" />
-                        </span>
-                    </summary>
-                    <aside>
-                        <ul>
-                            <li>
-                                <a href="/profile">
-                                    <span class="icon"><Svg id="tools" /></span>Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/settings">
-                                    <span class="icon"><Svg id="settings" /></span>Settings
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/logout">
-                                    <span class="icon"><Svg id="logout" /></span>Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </aside>
-                </details>
+                <Transition
+                    fallback=move || ()>
+                        {move || {
+                            let user = auth.user.read(cx);
+                            view!{ cx,
+                                <details>
+                                    <summary>
+                                        <span class="nav-label">{user}</span>
+                                        <span class="profile-picture">
+                                            <Svg id="user-circle" />
+                                        </span>
+                                    </summary>
+                                    <aside>
+                                    {move || {
+                                        if let Some(Ok(_)) = auth.user.read(cx) {
+                                            view!{ cx,
+                                                <ul>
+                                                    <li>
+                                                        <a href="/profile">
+                                                            <span class="icon"><Svg id="tools" /></span>Profile
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/settings">
+                                                            <span class="icon"><Svg id="settings" /></span>Settings
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/logout">
+                                                            <span class="icon"><Svg id="logout" /></span>Logout
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            }
+                                        } else {
+                                            view!{ cx,
+                                                <ul>
+                                                    <li>
+                                                        <a href="/login">
+                                                            <span class="icon"><Svg id="login" /></span>Login
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            }
+                                        }
+                                    }}
+                                    </aside>
+                                </details>
+                        }
+                    }}
+                </Transition>
             </div>
         </nav>
     }
