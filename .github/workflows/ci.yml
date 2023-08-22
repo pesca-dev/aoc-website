@@ -33,4 +33,4 @@ jobs:
         name: Run Tests
         with:
           command: leptos
-          args: test --release --all-features
+          args: test --release
