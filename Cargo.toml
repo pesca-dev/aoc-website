@@ -21,6 +21,7 @@ serde = "1.0.183"
 web-sys = { version = "0.3.64", features = ["HtmlDocument", "Window", "Storage"] }
 actix-session = { version = "0.7.2", optional = true, features = ["cookie-session"] }
 actix-identity = { version = "0.5.2", optional = true }
+argon2 = { version = "0.5.1", optional = true }
 
 [features]
 # default = ["csr"]
@@ -32,6 +33,7 @@ ssr = [
   "dep:actix-session",
   "dep:actix-identity",
   "dep:leptos_actix",
+  "dep:argon2",
   "leptos/ssr",
   "leptos_meta/ssr",
   "leptos_router/ssr",
