@@ -1,6 +1,6 @@
 use leptos::*;
 
-use crate::{components::Svg, contexts::use_auth};
+use crate::{components::Svg, hooks::use_auth};
 
 #[component]
 pub fn Navigation(cx: Scope) -> impl IntoView {

@@ -1,7 +1,7 @@
 use leptos::*;
 use leptos_router::ActionForm;
 
-use crate::contexts::use_auth;
+use crate::hooks::use_auth;
 
 #[component]
 pub fn LoginView(cx: Scope) -> impl IntoView {

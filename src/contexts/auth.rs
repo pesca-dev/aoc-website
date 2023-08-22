@@ -6,7 +6,7 @@ use crate::functions::{Login, Logout};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
-    use crate::functions::use_identity;
+    use crate::hooks::use_identity;
 }
 }
 
@@ -38,14 +38,7 @@ impl AuthContext {
 
 #[server(GetUserId, "/api")]
 async fn get_user_id(cx: Scope) -> Result<String, ServerFnError> {
-    let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
-        log!("some err");
-        return Err(ServerFnError::MissingArg(
-            "Failed to get the Request".to_string(),
-        ));
-    };
-
-    let identity = use_identity(&req)?;
+    let identity = use_identity(cx)?;
 
     let id = identity
         .id()
@@ -54,13 +47,10 @@ async fn get_user_id(cx: Scope) -> Result<String, ServerFnError> {
     Ok(id)
 }
 
+/// Provide an AuthContext for use in child components.
 #[component]
 pub fn AuthContextProvider(cx: Scope, children: Children) -> impl IntoView {
     provide_context(cx, AuthContext::new(cx));
 
     children(cx)
-}
-
-pub fn use_auth(cx: Scope) -> AuthContext {
-    use_context::<AuthContext>(cx).expect("no valid AuthContext given!")
 }
