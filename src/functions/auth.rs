@@ -9,6 +9,7 @@ if #[cfg(feature = "ssr")] {
         HttpMessage,
     };
     use crate::hooks::use_identity;
+    use crate::utils::password::hash_password;
 }
 }
 
@@ -27,6 +28,8 @@ pub async fn login(cx: Scope, username: String, password: String) -> Result<(), 
     }
 
     leptos_actix::redirect(cx, "/");
+
+    log!("{:?}", hash_password(password));
     Ok(())
 }
 

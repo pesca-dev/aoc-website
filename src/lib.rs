@@ -3,6 +3,7 @@ pub mod components;
 pub mod contexts;
 pub mod functions;
 pub mod hooks;
+pub mod utils;
 pub mod views;
 
 use cfg_if::cfg_if;
