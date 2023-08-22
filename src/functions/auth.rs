@@ -8,10 +8,7 @@ if #[cfg(feature = "ssr")] {
     use actix_web::{
         HttpMessage,
     };
-
-    pub fn use_identity(req: &actix_web::HttpRequest) -> Result<Identity, ServerFnError> {
-        IdentityExt::get_identity(req).map_err(|e| ServerFnError::ServerError(e.to_string()))
-    }
+    use crate::hooks::use_identity;
 }
 }
 
@@ -35,11 +32,9 @@ pub async fn login(cx: Scope, username: String, password: String) -> Result<(), 
 
 #[server(Logout, "/api")]
 pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
-    let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
+    let Ok(identity) = use_identity(cx) else {
         return Ok(());
     };
-
-    let identity = use_identity(&req)?;
 
     identity.logout();
 

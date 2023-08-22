@@ -1,7 +1,7 @@
 use leptos::*;
 use leptos_router::Redirect;
 
-use crate::{contexts::use_auth, functions::Logout};
+use crate::{functions::Logout, hooks::use_auth};
 
 #[component]
 pub fn LogoutView(cx: Scope) -> impl IntoView {
