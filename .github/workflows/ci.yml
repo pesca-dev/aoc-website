@@ -32,5 +32,5 @@ jobs:
       - uses: actions-rs/cargo@v1
         name: Run Tests
         with:
-          command: test
-          args: --workspace --release --all-features
+          command: leptos
+          args: test --workspace --release --all-features
