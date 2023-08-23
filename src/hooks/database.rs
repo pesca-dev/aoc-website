@@ -1,3 +1,5 @@
+use std::env;
+
 use surrealdb::{
     engine::remote::ws::{Client, Ws},
     opt::auth::Root,
@@ -11,8 +13,8 @@ pub async fn use_database(ns: impl ToString) -> Surreal<Client> {
 
     db.signin(Root {
         // TODO: these should not be hardcoded but rather extracted from environment
-        username: "root",
-        password: "root",
+        username: &env::var("SURREAL_USER").expect("no surreal db user given"),
+        password: &env::var("SURREAL_PW").expect("no surreal pw given"),
     })
     .await
     .expect("could not login to database");
