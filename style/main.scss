@@ -1,28 +1,118 @@
 @import "prism";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 $content-width: 1400px;
 
-$default-margin: 16px;
-
-$nav-height: 64px;
-$nav-margin: $default-margin;
-$body-padding-top: $nav-height + 2 * $nav-margin;
-
-$nav-horizontal-padding: 50px;
-
 html {
+    --nord0: #2e3440;
+    --nord1: #3b4252;
+    --nord2: #434c5e;
+    --nord3: #4c566a;
+
+    --nord4: #d8dee9;
+    --nord5: #e5e9f0;
+    --nord6: #eceff4;
+
+    --nord7: #8fbcbb;
+    --nord8: #88c0d0;
+    --nord9: #81a1c1;
+    --nord10: #5e81ac;
+
+    --nord11: #bf616a;
+    --nord12: #d08770;
+    --nord13: #ebcb8b;
+    --nord14: #a3be8c;
+    --nord15: #b48ead;
+
+    --very-light-grey: var(--nord6);
+    --light-grey: var(--nord5);
+    --grey: var(--nord4);
+    --light-dark: var(--nord3);
+    --medium-dark: var(--nord2);
+    --dark: var(--nord1);
+    --very-dark: var(--nord0);
+
+    --turquoise: var(--nord7);
+    --light-blue: var(--nord8);
+    --blue: var(--nord9);
+    --dark-blue: var(--nord10);
+
+    --red: var(--nord11);
+    --orange: var(--nord12);
+    --yellow: var(--nord13);
+    --green: var(--nord14);
+    --purple: var(--nord15);
+
+    --background-lvl-0: #fff;
+    --background-lvl-1: #fff;
+    --background-lvl-2: #fff;
+    --background-lvl-3: #fff;
+    --background-lvl-4: #fff;
+    --background-lvl-5: #fff;
+
+    --shadow-level-0: #ddd;
+    --shadow-level-1: #bbb;
+    --shadow-level-2: #999;
+    --shadow-level-3: #777;
+
+    --text-color: black;
+
+    --font-s: 0.75rem;
+    --font-ms: 0.875rem;
+    --font-m: 1rem;
+    --font-mml: 1.125rem;
+    --font-ml: 1.25rem;
+    --font-l: 1.5rem; 
+    --font-xl: 1.75rem;
+    --font-xxl: 2rem;
+
+    --content-width: 1400px;
+
+    --default-margin: 16px;
+
+    --nav-height: 64px;
+    --nav-margin: var(--default-margin);
+    --nav-horizontal-padding: 50px;
+
+    --body-padding-top: calc(var(--nav-height) + 2 * var(--nav-margin));
+
+    --input-padding: 8px;
+    --input-font-size: var(--font-m);
+    --input-border-color: var(--grey);
+
     scrollbar-gutter: stable;
 }
 
+@media (prefers-color-scheme: dark) {
+    html {
+        --background-lvl-0: var(--nord0);
+        --background-lvl-1: var(--nord1);
+        --background-lvl-2: var(--nord1);
+        --background-lvl-3: var(--nord2);
+        --background-lvl-4: var(--nord2);
+        --background-lvl-5: var(--nord3);
+
+        --shadow-level-0: #444;
+        --shadow-level-1: #333;
+        --shadow-level-2: #222;
+        --shadow-level-3: #111;
+
+        --text-color: white;
+    }
+}
+
 body {
+    font-family: 'Roboto', sans-serif;
     padding: 0;
     margin: auto;
-	font-family: sans-serif;
 	text-align: center;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     max-width: $content-width;
+
+    color: var(--text-color);
+    background-color: var(--background-lvl-0);
 }
 
 a {
@@ -30,25 +120,58 @@ a {
     color: initial;
 }
 
+label {
+    display: flex;
+    flex-direction: column;
+
+    span {
+        align-self: start;
+        font-size: var(--font-ms);
+        margin-bottom: 4px;
+    }
+}
+
+input {
+    color: var(--text-color);
+    font-size: var(--input-font-size);
+    padding: var(--input-padding);
+    border-radius: var(--input-padding);
+    border: 1px solid var(--input-border-color);
+    
+    background-color: var(--background-lvl-5);
+}
+
+button{
+    --button-padding: 8px;
+
+    &.primary {
+        background: var(--background-lvl-3);
+        color: var(--text-color);
+        border: none;
+        border-radius: 8px;
+        font-size:  var(--font-m);
+
+        box-shadow: 0 0 10px var(--shadow-level-0);
+
+        padding: var(--button-padding);
+    }
+}
+
 nav {
-    margin: $nav-margin;
-    height: $nav-height;
+    margin: var(--nav-margin);
+    height: var(--nav-height);
     border-radius: 8px;
-    width: calc(min(100%, $content-width) - $nav-margin * 2);
+    width: calc(min(100%, var(--content-width)) - var(--nav-margin) * 2);
     position: fixed;
     z-index: 99;
     display: flex; 
     background-color: white;
-    box-shadow: 0px 0px 10px #ddd;
+    box-shadow: 0px 0px 10px var(--shadow-level-3);
+    background-color: var(--background-lvl-3);
 
     > div {
         display: flex;
         align-items: center;
-    }
-
-    .logo {
-        width: 200px;
-        padding-left: $nav-horizontal-padding;
     }
 
     ul {
@@ -69,6 +192,7 @@ nav {
             }
 
             .icon {
+                --icon-color: var(--text-color);
                 $icon-size: 24px;
 
                 display: inline-block;
@@ -76,11 +200,15 @@ nav {
                 height: $icon-size;
                 margin-right: 8px;
             }
+
+            .nav-label {
+                color: var(--text-color);
+            }
         }
     }
 
     .profile {
-        padding-right: $nav-horizontal-padding;
+        padding-right: var(--nav-horizontal-padding);
 
         details {
             position: relative;
@@ -115,7 +243,8 @@ nav {
                 background-color: white;
                 text-align: left;
                 border-radius: 8px;
-                box-shadow: 0px 0px 10px #ddd;
+                box-shadow: 0px 0px 10px var(--shadow-level-3);
+                background-color: var(--background-lvl-5);
 
                 ul {
                     list-style: none;
@@ -132,6 +261,8 @@ nav {
 
                         a {
                             display: contents;
+
+                            color: var(--text-color);
                         }
 
                         .icon {
@@ -151,7 +282,7 @@ nav {
 
 main {
     display: flex;
-    padding-top: $body-padding-top;
+    padding-top: var(--body-padding-top);
     flex: 1;
 
     .sidebar {
@@ -163,8 +294,9 @@ main {
         > div {
             padding: $sidebar-padding;
             border-radius: 4px;
-            margin: $default-margin;
-            box-shadow: 0px 0px 10px #ddd;
+            margin: var(--default-margin);
+            box-shadow: 0px 0px 10px var(--shadow-level-2);
+            background-color: var(--background-lvl-2);
             height: fit-content;
         }
 
@@ -180,17 +312,24 @@ main {
             text-align: left;
 
             li > a {
+                color: var(--text-color);
                 display: block;
-                margin: $default-margin auto;
+                margin: var(--default-margin) auto;
                 padding: 12px;
                 border-radius: 8px;
 
                 &:hover {
                     background-color: #efefef;
+
+                    @media (prefers-color-scheme: dark) {
+                        & {
+                            background-color: var(--background-lvl-3);
+                        }
+                    }
                 }
 
                 &.active {
-                    background-color: #ddd;
+                    box-shadow: inset 0 0 0 1px #ddd;
                 }
             }
         }
@@ -222,13 +361,13 @@ main {
                     margin: auto;
                     overflow: auto;
                     padding: 16px;
-                    margin-bottom: $default-margin;
+                    margin-bottom: var(--default-margin);
                     border-radius: 8px;
-                    box-shadow: 0 0 10px #eee;
+                    box-shadow: 0 0 10px var(--shadow-level-0);
                     text-align: left;
 
                     :not(:first-of-type) {
-                        margin-top: $default-margin;
+                        margin-top: var(--default-margin);
                     }
 
                     details {
@@ -246,38 +385,16 @@ main {
     form {
         display: flex;
         flex-direction: column;
-        width: 400px;
-
+        min-width: min(400px, 100%);
 
         > * {
-            margin: 10px;
-            // padding: 10px;
+            margin: var(--default-margin);
         }
 
-        label {
-            display: flex;
-            flex-direction: column;
-
-            span {
-                align-self: start;
-                font-size: 1rem;
-                margin-bottom: 4px;
-            }
-
-            input {
-                padding: 5px;
-                border-radius: 5px;
-                border: 1px solid black;
-            }
-        }
-
-        button {
-            padding: 5px;
-        }
     }
 }
 
-@media screen and (max-width: $content-width) {
+@media screen and (max-width: 1000px) {
     nav {
         .logo {
             display: none;

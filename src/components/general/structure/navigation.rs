@@ -8,11 +8,6 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
 
     view! { cx,
         <nav>
-            <div class="logo">
-                <a href="/">
-                    AoC
-                </a>
-            </div>
             <ul>
                 <li>
                     <a href="/">
