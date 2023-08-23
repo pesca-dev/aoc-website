@@ -1,6 +1,8 @@
 #[cfg(feature = "ssr")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv::dotenv().ok();
+
     use actix_files::Files;
     use actix_identity::IdentityMiddleware;
     use actix_session::{
