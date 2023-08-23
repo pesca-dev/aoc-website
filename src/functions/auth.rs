@@ -30,7 +30,7 @@ pub async fn register(
 ) -> Result<(), ServerFnError> {
     let db = use_database("test").await;
 
-    let created: User = db
+    let created: Option<User> = db
         .create(("user", &username))
         .content(User {
             username,
