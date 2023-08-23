@@ -2,7 +2,7 @@ use cfg_if::cfg_if;
 
 use leptos::*;
 
-use crate::functions::{Login, Logout};
+use crate::functions::{Login, Logout, Register};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
@@ -14,6 +14,7 @@ if #[cfg(feature = "ssr")] {
 pub struct AuthContext {
     pub login: Action<Login, Result<(), ServerFnError>>,
     pub logout: Action<Logout, Result<(), ServerFnError>>,
+    pub register: Action<Register, Result<(), ServerFnError>>,
     pub user: Resource<(usize, usize), Result<String, ServerFnError>>,
 }
 
@@ -21,6 +22,7 @@ impl AuthContext {
     fn new(cx: Scope) -> Self {
         let login = create_server_action::<Login>(cx);
         let logout = create_server_action::<Logout>(cx);
+        let register = create_server_action::<Register>(cx);
 
         let user = create_resource(
             cx,
@@ -31,6 +33,7 @@ impl AuthContext {
         AuthContext {
             login,
             logout,
+            register,
             user,
         }
     }

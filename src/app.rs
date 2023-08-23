@@ -5,7 +5,7 @@ use leptos_router::*;
 use crate::{
     components::Navigation,
     contexts::AuthContextProvider,
-    views::{CodeView, HomeView, LoginView, LogoutView, ProfileView, SettingsView},
+    views::{CodeView, HomeView, LoginView, LogoutView, ProfileView, RegisterView, SettingsView},
 };
 
 #[component]
@@ -33,6 +33,7 @@ pub fn App(cx: Scope) -> impl IntoView {
                         <Route path="/profile" view=ProfileView ssr=SsrMode::Async/>
                         <Route path="/settings" view=SettingsView ssr=SsrMode::Async/>
                         <Route path="/login" view=LoginView ssr=SsrMode::Async/>
+                        <Route path="/register" view=RegisterView ssr=SsrMode::Async/>
                         <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
                         <Route path="/code" view=CodeView ssr=SsrMode::Async/>
                         <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>

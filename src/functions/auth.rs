@@ -13,6 +13,12 @@ if #[cfg(feature = "ssr")] {
 }
 }
 
+#[server(Register, "/api")]
+pub async fn register(cx: Scope) -> Result<(), ServerFnError> {
+    log!("REGISTER");
+    Ok(())
+}
+
 #[server(Login, "/api")]
 pub async fn login(cx: Scope, username: String, password: String) -> Result<(), ServerFnError> {
     let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
