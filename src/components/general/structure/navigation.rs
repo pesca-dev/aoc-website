@@ -72,7 +72,7 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                                                     </li>
                                                     <li>
                                                         <a href="/register">
-                                                            <span class="icon"><Svg id="login" /></span>Register
+                                                            <span class="icon"><Svg id="register" /></span>Register
                                                         </a>
                                                     </li>
                                                 </ul>

@@ -17,11 +17,12 @@ leptos_meta = { version = "0.4", features = ["nightly"] }
 leptos_actix = { version = "0.4", optional = true }
 leptos_router = { version = "0.4", features = ["nightly"] }
 wasm-bindgen = "=0.2.87"
-serde = "1.0.183"
+serde = { version = "1.0.183", features = ["derive"] }
 web-sys = { version = "0.3.64", features = ["HtmlDocument", "Window", "Storage"] }
 actix-session = { version = "0.7.2", optional = true, features = ["cookie-session"] }
 actix-identity = { version = "0.5.2", optional = true }
 argon2 = { version = "0.5.1", optional = true }
+surrealdb = { version = "1.0.0-beta.9", optional = true }
 
 [features]
 # default = ["csr"]
@@ -34,14 +35,11 @@ ssr = [
   "dep:actix-identity",
   "dep:leptos_actix",
   "dep:argon2",
+  "dep:surrealdb",
   "leptos/ssr",
   "leptos_meta/ssr",
   "leptos_router/ssr",
 ]
-
-# [package.metadata.cargo-all-features]
-# denylist = ["axum", "tower", "tower-http", "tokio", "sqlx", "leptos_axum", "femark", "chrono", "argon2","rand", "rand_core"]
-# skip_feature_sets = [["csr", "ssr"], ["csr", "hydrate"], ["ssr", "hydrate"]]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
 [profile.wasm-release]
