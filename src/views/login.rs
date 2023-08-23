@@ -23,14 +23,14 @@ pub fn LoginView(cx: Scope) -> impl IntoView {
                             <ActionForm action=auth.login>
                                 <h1>"Login"</h1>
                                 <label>
-                                    <span>"Username:"</span>
-                                    <input type="text" name="username" />
+                                    <span>"Username"</span>
+                                    <input type="text" name="username" required/>
                                 </label>
                                 <label>
-                                    <span>"Password:"</span>
-                                    <input type="password" name="password" />
+                                    <span>"Password"</span>
+                                    <input type="password" name="password" required/>
                                 </label>
-                                <button type="submit">"Login"</button>
+                                <button type="submit" class="primary">"Login"</button>
                             </ActionForm>
                         </section>
                 </Show>
