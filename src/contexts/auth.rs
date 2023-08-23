@@ -15,7 +15,7 @@ pub struct AuthContext {
     pub login: Action<Login, Result<(), ServerFnError>>,
     pub logout: Action<Logout, Result<(), ServerFnError>>,
     pub register: Action<Register, Result<(), ServerFnError>>,
-    pub user: Resource<(usize, usize), Result<String, ServerFnError>>,
+    pub user: Resource<(usize, usize, usize), Result<String, ServerFnError>>,
 }
 
 impl AuthContext {
@@ -26,7 +26,13 @@ impl AuthContext {
 
         let user = create_resource(
             cx,
-            move || (login.version().get(), logout.version().get()),
+            move || {
+                (
+                    login.version().get(),
+                    logout.version().get(),
+                    register.version().get(),
+                )
+            },
             move |_| get_user_id(cx),
         );
 
