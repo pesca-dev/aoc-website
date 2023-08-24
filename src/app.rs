@@ -5,7 +5,10 @@ use leptos_router::*;
 use crate::{
     components::Navigation,
     contexts::AuthContextProvider,
-    views::{CodeView, HomeView, LoginView, LogoutView, ProfileView, RegisterView, SettingsView},
+    views::{
+        CodeView, HomeView, ImpressumView, LoginView, LogoutView, ProfileView, RegisterView,
+        SettingsView,
+    },
 };
 
 #[component]
@@ -37,9 +40,15 @@ pub fn App(cx: Scope) -> impl IntoView {
                         <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
                         <Route path="/code" view=CodeView ssr=SsrMode::Async/>
                         <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>
+                        <Route path="/impressum" view=ImpressumView ssr=SsrMode::Async/>
                         <Route path="/*any" view=NotFound ssr=SsrMode::Async/>
                     </Routes>
                 </main>
+                <div class="footer">
+                    <ul>
+                        <a href="/impressum">"Impressum & Datenschutz"</a>
+                    </ul>
+                </div>
             </Router>
         </AuthContextProvider>
     }

@@ -103,6 +103,7 @@ html {
 
 body {
     font-family: 'Roboto', sans-serif;
+    word-break: break-word;
     padding: 0;
     margin: auto;
 	text-align: center;
@@ -393,6 +394,17 @@ main {
             margin: var(--default-margin);
         }
 
+    }
+}
+
+.impressum {
+    text-align: justify;
+    align-items: center;
+
+    > div {
+
+        max-width: min(800px, 100%);
+        margin: var(--default-margin);
     }
 }
 
