@@ -2,7 +2,7 @@ use cfg_if::cfg_if;
 
 use leptos::*;
 
-use crate::functions::{Login, Logout, Register};
+use crate::functions::{Login, Logout, Register, RegistrationResult};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
@@ -14,7 +14,7 @@ if #[cfg(feature = "ssr")] {
 pub struct AuthContext {
     pub login: Action<Login, Result<(), ServerFnError>>,
     pub logout: Action<Logout, Result<(), ServerFnError>>,
-    pub register: Action<Register, Result<(), ServerFnError>>,
+    pub register: Action<Register, Result<RegistrationResult, ServerFnError>>,
     pub user: Resource<(usize, usize, usize), Result<String, ServerFnError>>,
 }
 

@@ -43,6 +43,9 @@ html {
     --green: var(--nord14);
     --purple: var(--nord15);
 
+    --error: var(--red);
+    --success: var(--green);
+
     --background-lvl-0: #fff;
     --background-lvl-1: #fff;
     --background-lvl-2: #fff;
@@ -118,7 +121,7 @@ body {
 
 a {
     text-decoration: none;
-    color: initial;
+    color: var(--text-color);
 }
 
 label {
@@ -381,6 +384,12 @@ main {
     }
 }
 
+.footer {
+    ul {
+        padding: 0;
+    }
+}
+
 .login-view,
 .register-view {
     align-items: center;
@@ -394,6 +403,19 @@ main {
             margin: var(--default-margin);
         }
 
+        .result {
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+
+            &.error {
+                background-color: var(--error);
+            }
+
+            &.success {
+                background-color: var(--success);
+            }
+        }
     }
 }
 
@@ -402,7 +424,6 @@ main {
     align-items: center;
 
     > div {
-
         max-width: min(800px, 100%);
         margin: var(--default-margin);
     }

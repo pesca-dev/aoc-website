@@ -6,7 +6,6 @@ use crate::hooks::use_auth;
 #[component]
 pub fn LoginView(cx: Scope) -> impl IntoView {
     let auth = use_auth(cx);
-
     view! { cx,
         <Transition
             fallback=move || ()>
