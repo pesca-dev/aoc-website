@@ -19,7 +19,7 @@ pub async fn use_database(ns: impl ToString) -> Surreal<Client> {
     .await
     .expect("could not login to database");
 
-    db.use_ns("test")
+    db.use_ns("aoc-website")
         .use_db(ns.to_string())
         .await
         .expect("could not switch to correct namespace");

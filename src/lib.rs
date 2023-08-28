@@ -3,6 +3,7 @@ pub mod components;
 pub mod contexts;
 pub mod functions;
 pub mod hooks;
+pub mod repository;
 pub mod utils;
 pub mod views;
 
