@@ -3,38 +3,43 @@ use surrealdb::sql::Thing;
 
 use crate::hooks::use_database;
 
-// TODO: maybe create this via a macro?
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct UserCreateData {
+#[derive(Debug, Deserialize, Serialize, Clone, Default)]
+pub struct UserRepository {
+    #[serde(skip_serializing)]
+    id: Option<Thing>,
     pub username: String,
     pub password: String,
     pub email: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct User {
-    id: Thing,
-    pub username: String,
-    pub password: String,
-    pub email: String,
-}
-
-impl User {
+impl UserRepository {
     const TABLE: &str = "user";
 
-    pub fn id(&self) -> String {
-        format!("{}:{}", self.id.tb, self.id.id)
+    pub fn id(&self) -> Option<String> {
+        self.id.as_ref().map(|id| format!("{}:{}", id.tb, id.id))
     }
 
-    pub async fn get_all() -> Result<Vec<User>, surrealdb::Error> {
+    pub async fn get_all() -> Result<Vec<UserRepository>, surrealdb::Error> {
         let db = use_database("aoc-website").await;
 
         db.select(Self::TABLE).await
     }
 
+    pub async fn get_by_id(id: impl ToString) -> Result<Option<UserRepository>, surrealdb::Error> {
+        let db = use_database("aoc-website").await;
+
+        let mut result = db
+            .query("SELECT * FROM type::table($table) where id = $id;")
+            .bind(("table", Self::TABLE))
+            .bind(("id", id.to_string()))
+            .await?;
+
+        result.take(0)
+    }
+
     pub async fn get_by_username(
         username: impl ToString,
-    ) -> Result<Option<User>, surrealdb::Error> {
+    ) -> Result<Option<UserRepository>, surrealdb::Error> {
         let db = use_database("aoc-website").await;
 
         let mut result = db
@@ -46,10 +51,23 @@ impl User {
         result.take(0)
     }
 
-    pub async fn create(data: UserCreateData) -> Result<(), surrealdb::Error> {
+    pub async fn create(
+        username: String,
+        password: String,
+        email: String,
+    ) -> Result<Option<UserRepository>, surrealdb::Error> {
         let db = use_database("aoc-website").await;
-        let _: Vec<User> = db.create(Self::TABLE).content(data).await?;
+        let result: Vec<UserRepository> = db
+            .create("user")
+            .content(UserRepository {
+                username,
+                password,
+                email,
+                ..Default::default()
+            })
+            .await?;
 
-        Ok(())
+        // TODO: this should be changed in beta9
+        Ok(result.get(0).cloned())
     }
 }

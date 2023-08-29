@@ -13,7 +13,7 @@ if #[cfg(feature = "ssr")] {
     };
     use crate::hooks::use_identity;
     use crate::utils::password::{verify_password, hash_password};
-    use crate::repository::{User, UserCreateData};
+    use crate::model::User;
 }
 }
 
@@ -50,11 +50,13 @@ pub async fn register(
         return Ok(RegistrationResult::PasswordsDoNotMatch);
     }
 
-    if let Err(e) = User::create(UserCreateData {
+    if let Err(e) = (User {
         username,
         password: hash_password(password)?,
         email,
+        ..Default::default()
     })
+    .create()
     .await
     .map_err(|_| RegistrationResult::CredentialsAlreadyTaken)
     {
@@ -81,7 +83,7 @@ pub async fn login(cx: Scope, username: String, password: String) -> Result<(), 
         ));
     }
 
-    let user: Option<User> = User::get_by_username(&username).await?;
+    let user: Option<User> = User::get_by_username(&username).await;
 
     let Some(user) = user else {
         return Err(ServerFnError::ServerError("User not found".into()));
