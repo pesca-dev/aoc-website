@@ -13,7 +13,7 @@ if #[cfg(feature = "ssr")] {
     };
     use crate::hooks::use_identity;
     use crate::utils::password::{verify_password, hash_password};
-    use crate::model::User;
+    use crate::model::{User, Session};
 }
 }
 
@@ -85,15 +85,19 @@ pub async fn login(cx: Scope, username: String, password: String) -> Result<(), 
 
     let user: Option<User> = User::get_by_username(&username).await;
 
-    let Some(user) = user else {
+    let Some(mut user) = user else {
         return Err(ServerFnError::ServerError("User not found".into()));
     };
 
-    let Ok(true) = verify_password(password, user.password) else {
+    let Ok(true) = verify_password(&password, &user.password) else {
         return Err(ServerFnError::ServerError("User not found".into()));
     };
 
-    Identity::login(&req.extensions(), username.clone()).unwrap();
+    let Some(session_id) = user.login().await else {
+        return Err(ServerFnError::ServerError("Some Error".into()));
+    };
+
+    Identity::login(&req.extensions(), session_id).unwrap();
 
     leptos_actix::redirect(cx, "/");
     return Ok(());
@@ -104,6 +108,9 @@ pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
     let Ok(identity) = use_identity(cx) else {
         return Ok(());
     };
+
+    let session_id = identity.id().expect("session did not have an error");
+    Session::destroy(&session_id).await;
 
     identity.logout();
 
