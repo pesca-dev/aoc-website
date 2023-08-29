@@ -18,8 +18,8 @@ pub fn hash_password(password: String) -> Result<String, Error> {
     Ok(password_hash)
 }
 
-pub fn verify_password(password: String, hash: String) -> Result<bool, Error> {
-    let parsed_hash = PasswordHash::new(&hash)?;
+pub fn verify_password(password: &String, hash: &String) -> Result<bool, Error> {
+    let parsed_hash = PasswordHash::new(hash)?;
 
     Ok(Argon2::default()
         .verify_password(password.as_bytes(), &parsed_hash)
@@ -40,7 +40,7 @@ mod tests {
         let password = "some_password".to_string();
         let hash = hash_password(password.clone()).unwrap();
 
-        assert_eq!(verify_password(password, hash), Ok(true));
+        assert_eq!(verify_password(&password, &hash), Ok(true));
     }
 
     #[test]
@@ -49,6 +49,6 @@ mod tests {
         let hash = hash_password(password.clone()).unwrap();
 
         let password = "other_password".to_string();
-        assert_eq!(verify_password(password, hash), Ok(false));
+        assert_eq!(verify_password(&password, &hash), Ok(false));
     }
 }

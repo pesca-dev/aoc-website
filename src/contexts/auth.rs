@@ -6,7 +6,7 @@ use crate::functions::{Login, Logout, Register, RegistrationResult};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
-    use crate::hooks::use_identity;
+    use crate::{hooks::use_identity, model::Session};
 }
 }
 
@@ -15,7 +15,7 @@ pub struct AuthContext {
     pub login: Action<Login, Result<(), ServerFnError>>,
     pub logout: Action<Logout, Result<(), ServerFnError>>,
     pub register: Action<Register, Result<RegistrationResult, ServerFnError>>,
-    pub user: Resource<(usize, usize, usize), Result<String, ServerFnError>>,
+    pub user: Resource<(usize, usize, usize), Result<Option<String>, ServerFnError>>,
 }
 
 impl AuthContext {
@@ -46,14 +46,22 @@ impl AuthContext {
 }
 
 #[server(GetUserId, "/api")]
-async fn get_user_id(cx: Scope) -> Result<String, ServerFnError> {
+async fn get_user_id(cx: Scope) -> Result<Option<String>, ServerFnError> {
     let identity = use_identity(cx)?;
 
-    let id = identity
+    let session_id = identity
         .id()
         .map_err(|_| ServerFnError::ServerError("User Not Found!".to_string()))?;
 
-    Ok(id)
+    match Session::find_user_via_session(&session_id).await {
+        Some(user) => {
+            return Ok(Some(user.username));
+        }
+        None => {
+            identity.logout();
+            return Err(ServerFnError::ServerError("Inactive session!".to_string()));
+        }
+    }
 }
 
 /// Provide an AuthContext for use in child components.

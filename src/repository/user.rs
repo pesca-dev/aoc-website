@@ -20,27 +20,23 @@ impl UserRepository {
     }
 
     pub async fn get_all() -> Result<Vec<UserRepository>, surrealdb::Error> {
-        let db = use_database("aoc-website").await;
+        let db = use_database().await;
 
         db.select(Self::TABLE).await
     }
 
     pub async fn get_by_id(id: impl ToString) -> Result<Option<UserRepository>, surrealdb::Error> {
-        let db = use_database("aoc-website").await;
+        let db = use_database().await;
 
-        let mut result = db
-            .query("SELECT * FROM type::table($table) where id = $id;")
-            .bind(("table", Self::TABLE))
-            .bind(("id", id.to_string()))
-            .await?;
+        let result: Option<UserRepository> = db.select((Self::TABLE, id.to_string())).await?;
 
-        result.take(0)
+        Ok(result)
     }
 
     pub async fn get_by_username(
         username: impl ToString,
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
-        let db = use_database("aoc-website").await;
+        let db = use_database().await;
 
         let mut result = db
             .query("SELECT * FROM type::table($table) where username = $username;")
@@ -56,9 +52,9 @@ impl UserRepository {
         password: String,
         email: String,
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
-        let db = use_database("aoc-website").await;
+        let db = use_database().await;
         let result: Vec<UserRepository> = db
-            .create("user")
+            .create(Self::TABLE)
             .content(UserRepository {
                 username,
                 password,

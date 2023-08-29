@@ -6,7 +6,11 @@ use surrealdb::{
     Surreal,
 };
 
-pub async fn use_database(db: impl ToString) -> Surreal<Client> {
+const NS_NAME: &str = "aoc-website";
+
+const DB_NAME: &str = "aoc-website";
+
+pub async fn use_database() -> Surreal<Client> {
     let connection =
         Surreal::new::<Ws>(env::var("SURREAL_URL").expect("no surreal url db user given"))
             .await
@@ -22,8 +26,8 @@ pub async fn use_database(db: impl ToString) -> Surreal<Client> {
         .expect("could not login to database");
 
     connection
-        .use_ns("aoc-website")
-        .use_db(db.to_string())
+        .use_ns(NS_NAME)
+        .use_db(DB_NAME)
         .await
         .expect("could not switch to correct namespace");
 
