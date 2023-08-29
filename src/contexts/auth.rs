@@ -6,7 +6,7 @@ use crate::functions::{Login, Logout, Register, RegistrationResult};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
-    use crate::{hooks::use_identity, model::Session};
+    use crate::{hooks::{use_identity, use_user}};
 }
 }
 
@@ -47,17 +47,12 @@ impl AuthContext {
 
 #[server(GetUserId, "/api")]
 async fn get_user_id(cx: Scope) -> Result<Option<String>, ServerFnError> {
-    let identity = use_identity(cx)?;
-
-    let session_id = identity
-        .id()
-        .map_err(|_| ServerFnError::ServerError("User Not Found!".to_string()))?;
-
-    match Session::find_user_via_session(&session_id).await {
+    match use_user(cx).await {
         Some(user) => {
             return Ok(Some(user.username));
         }
         None => {
+            let identity = use_identity(cx)?;
             identity.logout();
             return Err(ServerFnError::ServerError("Inactive session!".to_string()));
         }
