@@ -10,13 +10,13 @@ pub static DB: OnceLock<Surreal<Client>> = OnceLock::new();
 
 pub async fn init_db() -> Result<(), surrealdb::Error> {
     let connection =
-        Surreal::new::<Ws>(env::var("SURREAL_URL").expect("no surreal url db user given")).await?;
+        Surreal::new::<Ws>(env::var("SURREAL_HOST").expect("no surreal url db user given")).await?;
 
     connection
         .signin(Root {
             // TODO: these should not be hardcoded but rather extracted from environment
             username: &env::var("SURREAL_USER").expect("no surreal db user given"),
-            password: &env::var("SURREAL_PW").expect("no surreal pw given"),
+            password: &env::var("SURREAL_PASS").expect("no surreal pw given"),
         })
         .await?;
 
