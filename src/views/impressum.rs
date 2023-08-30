@@ -5,9 +5,6 @@ pub fn ImpressumView(cx: Scope) -> impl IntoView {
     view! { cx,
         <section class="impressum">
             <div>
-                <h1>Impressum</h1>
-                <h2 id="m3">Verantwortlicher</h2>
-
                 <h1>"Datenschutzerklärung"</h1>
                 <h2 id="m4158">"Präambel"</h2>
                 <p>"Mit der folgenden Datenschutzerklärung möchten wir Sie darüber aufklären, welche Arten Ihrer personenbezogenen Daten (nachfolgend auch kurz als \"Daten\" bezeichnet) wir zu welchen Zwecken und in welchem Umfang im Rahmen der Bereitstellung unserer Applikation verarbeiten."</p>
@@ -16,7 +13,7 @@ pub fn ImpressumView(cx: Scope) -> impl IntoView {
                 <h2>"Inhaltsübersicht"</h2>
                 <ul class="index">
                     <li><a class="index-link" href="#m4158">"Präambel"</a></li>
-                    <li><a class="index-link" href="#m3">"Verantwortlicher"</a></li>
+                    <li><a class="index-link" href="#m3">"Kontakt"</a></li>
                     <li><a class="index-link" href="#mOverview">"Übersicht der Verarbeitungen"</a></li>
                     <li><a class="index-link" href="#m2427">"Maßgebliche Rechtsgrundlagen"</a></li>
                     <li><a class="index-link" href="#m27">"Sicherheitsmaßnahmen"</a></li>
@@ -32,7 +29,9 @@ pub fn ImpressumView(cx: Scope) -> impl IntoView {
                     <li><a class="index-link" href="#m328">Plugins und eingebettete Funktionen sowie Inhalte</a></li>
                     <li><a class="index-link" href="#m15">Änderung und Aktualisierung der Datenschutzerklärung</a></li>
                 </ul>
-                <h2 id="m3">Verantwortlicher</h2>
+                <h2 id="m3">"Kontakt"</h2>
+                E-Mail-Adresse:
+                <p><a href="mailto:contact@mail.pesca.dev">"contact@mail.pesca.dev"</a></p>
                 <h2 id="m2427">Maßgebliche Rechtsgrundlagen</h2>
                 <p><strong>Maßgebliche Rechtsgrundlagen nach der DSGVO: </strong>Im Folgenden erhalten Sie eine Übersicht der Rechtsgrundlagen der DSGVO, auf deren Basis wir personenbezogene Daten verarbeiten. Bitte nehmen Sie zur Kenntnis, dass neben den Regelungen der DSGVO nationale Datenschutzvorgaben in Ihrem bzw. unserem Wohn- oder Sitzland gelten können. Sollten ferner im Einzelfall speziellere Rechtsgrundlagen maßgeblich sein, teilen wir Ihnen diese in der Datenschutzerklärung mit.</p>
                 <ul>
