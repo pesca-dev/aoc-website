@@ -1,6 +1,6 @@
 use leptos::*;
 
-use crate::model::{Session, User};
+use crate::{model::User, repository::LoggedInRepository};
 
 use super::use_identity;
 
@@ -15,5 +15,5 @@ pub async fn use_user(cx: Scope) -> Option<User> {
         return None;
     };
 
-    Session::find_user_via_session(&session_id).await
+    LoggedInRepository::find_user_via_session(&session_id).await
 }
