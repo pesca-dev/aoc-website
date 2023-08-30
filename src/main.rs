@@ -12,7 +12,7 @@ async fn main() -> std::io::Result<()> {
         cookie::{time, Key},
         web, App, HttpServer,
     };
-    use aoc_website::app::*;
+    use aoc_website::{app::*, services::database};
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
 
@@ -22,6 +22,10 @@ async fn main() -> std::io::Result<()> {
     let routes = generate_route_list(|cx| view! { cx, <App/> });
 
     let secret_key = Key::generate();
+
+    if let Err(e) = database::init_db().await {
+        error!("failed to connect to DB: {e:?}");
+    };
 
     HttpServer::new(move || {
         let leptos_options = &conf.leptos_options;

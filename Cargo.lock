@@ -380,6 +380,7 @@ dependencies = [
  "actix-web",
  "argon2",
  "cfg-if",
+ "chrono",
  "console_error_panic_hook",
  "dotenv",
  "http",

@@ -1,3 +1,4 @@
+use chrono::Utc;
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
@@ -9,6 +10,7 @@ use crate::hooks::use_database;
 pub struct SessionRepository {
     #[serde(skip_serializing)]
     id: Option<Thing>,
+    created_at: String,
 }
 
 impl SessionRepository {
@@ -23,6 +25,7 @@ impl SessionRepository {
         let result: Vec<SessionRepository> = db
             .create(Self::TABLE)
             .content(SessionRepository {
+                created_at: Utc::now().to_rfc3339(),
                 ..Default::default()
             })
             .await?;

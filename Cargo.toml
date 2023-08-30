@@ -24,6 +24,7 @@ actix-identity = { version = "0.5.2", optional = true }
 argon2 = { version = "0.5.1", optional = true }
 surrealdb = { git = "https://github.com/surrealdb/surrealdb.git", rev = "fdec86ce3cbcd3187783b4896740e85f438648bb", optional = true}
 dotenv = "0.15.0"
+chrono = "0.4.28"
 
 [features]
 # default = ["csr"]

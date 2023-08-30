@@ -5,6 +5,7 @@ pub mod functions;
 pub mod hooks;
 pub mod model;
 pub mod repository;
+pub mod services;
 pub mod utils;
 pub mod views;
 
