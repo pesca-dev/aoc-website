@@ -1,8 +1,10 @@
 use std::error::Error;
 
+use actix_identity::Identity;
+use actix_web::{HttpMessage, HttpRequest};
 use serde::{Deserialize, Serialize};
 
-use crate::repository::UserRepository;
+use crate::{repository::UserRepository, utils::password::verify_password};
 
 use super::Session;
 
@@ -90,16 +92,31 @@ impl User {
         }
     }
 
-    pub async fn login(&mut self) -> Option<String> {
-        let Some(session) = Session::new(self).await else {
-            tracing::error!("failed to login user ({})", self.id);
-            return None;
+    pub async fn login(&mut self, password: &str, req: &HttpRequest) -> Result<(), LoginError> {
+        let Ok(true) = verify_password(password, &self.password) else {
+            return Err(LoginError::PasswordMismatch);
         };
 
-        let id = session.id.clone();
+        let Some(session) = Session::new(self).await else {
+            // tracing::error!("failed to login user ({})", self.id);
+            return Err(LoginError::Internal);
+        };
+
+        let session_id = session.id.clone();
+
+        if let Err(e) = Identity::login(&req.extensions(), session_id.clone()) {
+            tracing::error!("Identity::login error: {e:#?}");
+            Session::destroy(&session_id).await;
+            return Err(LoginError::Internal);
+        }
 
         self.sessions.push(session);
 
-        Some(id)
+        Ok(())
     }
+}
+
+pub enum LoginError {
+    PasswordMismatch,
+    Internal,
 }

@@ -7,13 +7,10 @@ use serde::{Deserialize, Serialize};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
-    use actix_identity::{Identity, IdentityExt};
-    use actix_web::{
-        HttpMessage,
-    };
+    use actix_identity::IdentityExt;
     use crate::hooks::use_identity;
-    use crate::utils::password::{verify_password, hash_password};
-    use crate::model::{User, Session};
+    use crate::utils::password::hash_password;
+    use crate::model::{User, LoginError, Session};
 }
 }
 
@@ -68,45 +65,64 @@ pub async fn register(
     Ok(RegistrationResult::Ok)
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum LoginResult {
+    Ok,
+    InternalServerError,
+    WrongCredentials,
+    VerifyEmail,
+    AlreadyLoggedIn,
+}
+
+impl Display for LoginResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use LoginResult::*;
+
+        match self {
+            Ok => f.write_str("Login Successful!"),
+            InternalServerError => f.write_str("Internal Server Error!"),
+            WrongCredentials => f.write_str("Wrong Credentials!"),
+            VerifyEmail => f.write_str("Verify your Email bevore logging in!"),
+            AlreadyLoggedIn => f.write_str("You are already logged in!"),
+        }
+    }
+}
+
 #[server(Login, "/api")]
-pub async fn login(cx: Scope, username: String, password: String) -> Result<(), ServerFnError> {
+pub async fn login(
+    cx: Scope,
+    username: String,
+    password: String,
+) -> Result<LoginResult, ServerFnError> {
     let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
-        return Err(ServerFnError::MissingArg(
-            "Failed to get the Request".to_string(),
-        ));
+        return Ok(LoginResult::InternalServerError);
     };
 
     let ident = IdentityExt::get_identity(&req);
 
     if ident.is_ok() {
         leptos_actix::redirect(cx, "/");
-        return Err(ServerFnError::ServerError(
-            "User is already logged in...".to_string(),
-        ));
+        return Ok(LoginResult::AlreadyLoggedIn);
     }
 
     let user: Option<User> = User::get_by_username(&username).await;
 
     let Some(mut user) = user else {
-        return Err(ServerFnError::ServerError("User not found".into()));
+        return Ok(LoginResult::WrongCredentials);
     };
 
     if !user.email_verified {
-        return Err(ServerFnError::ServerError("Email not verified".into()));
+        return Ok(LoginResult::VerifyEmail);
     }
 
-    let Ok(true) = verify_password(&password, &user.password) else {
-        return Err(ServerFnError::ServerError("User not found".into()));
+    match user.login(&password, &req).await {
+        Err(LoginError::Internal) => return Ok(LoginResult::InternalServerError),
+        Err(LoginError::PasswordMismatch) => return Ok(LoginResult::WrongCredentials),
+        Ok(_) => (),
     };
-
-    let Some(session_id) = user.login().await else {
-        return Err(ServerFnError::ServerError("Some Error".into()));
-    };
-
-    Identity::login(&req.extensions(), session_id).unwrap();
 
     leptos_actix::redirect(cx, "/");
-    return Ok(());
+    return Ok(LoginResult::Ok);
 }
 
 #[server(Logout, "/api")]
@@ -115,7 +131,7 @@ pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
         return Ok(());
     };
 
-    let session_id = identity.id().expect("session did not have an error");
+    let session_id = identity.id().expect("session did not have an id");
     Session::destroy(&session_id).await;
 
     identity.logout();
