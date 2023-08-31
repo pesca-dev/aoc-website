@@ -27,10 +27,10 @@ impl Display for RegistrationResult {
         use RegistrationResult::*;
 
         match self {
-            Ok => f.write_str("Registration Successful!"),
+            Ok => f.write_str("Registration Successful"),
             InternalServerError => f.write_str("Internal Server Error"),
-            PasswordsDoNotMatch => f.write_str("Passwords do not match!"),
-            CredentialsAlreadyTaken => f.write_str("Credentials are already taken!"),
+            PasswordsDoNotMatch => f.write_str("Passwords do not match"),
+            CredentialsAlreadyTaken => f.write_str("Credentials are already taken"),
         }
     }
 }
@@ -79,11 +79,11 @@ impl Display for LoginResult {
         use LoginResult::*;
 
         match self {
-            Ok => f.write_str("Login Successful!"),
-            InternalServerError => f.write_str("Internal Server Error!"),
-            WrongCredentials => f.write_str("Wrong Credentials!"),
-            VerifyEmail => f.write_str("Verify your Email bevore logging in!"),
-            AlreadyLoggedIn => f.write_str("You are already logged in!"),
+            Ok => f.write_str("Login Successful"),
+            InternalServerError => f.write_str("Internal Server Error"),
+            WrongCredentials => f.write_str("Wrong Credentials"),
+            VerifyEmail => f.write_str("Verify your Email bevore logging in"),
+            AlreadyLoggedIn => f.write_str("You are already logged in"),
         }
     }
 }

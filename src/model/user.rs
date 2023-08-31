@@ -104,11 +104,12 @@ impl User {
 
         let session_id = session.id.clone();
 
-        if let Err(e) = Identity::login(&req.extensions(), session_id.clone()) {
+        let login_result = Identity::login(&req.extensions(), session_id.clone()).err();
+        if let Some(e) = login_result {
             tracing::error!("Identity::login error: {e:#?}");
             Session::destroy(&session_id).await;
             return Err(LoginError::Internal);
-        }
+        };
 
         self.sessions.push(session);
 
