@@ -58,8 +58,10 @@ pub async fn register(
     })
     .create()
     .await
-    .map_err(|_| RegistrationResult::CredentialsAlreadyTaken)
-    {
+    .map_err(|e| {
+        tracing::error!("{e:#?}");
+        RegistrationResult::CredentialsAlreadyTaken
+    }) {
         return Ok(e);
     };
 
@@ -88,6 +90,10 @@ pub async fn login(cx: Scope, username: String, password: String) -> Result<(), 
     let Some(mut user) = user else {
         return Err(ServerFnError::ServerError("User not found".into()));
     };
+
+    if !user.email_verified {
+        return Err(ServerFnError::ServerError("Email not verified".into()));
+    }
 
     let Ok(true) = verify_password(&password, &user.password) else {
         return Err(ServerFnError::ServerError("User not found".into()));

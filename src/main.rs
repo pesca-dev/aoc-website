@@ -16,6 +16,12 @@ async fn main() -> std::io::Result<()> {
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
 
+    let subscriber = tracing_subscriber::fmt()
+        .with_max_level(tracing::metadata::LevelFilter::DEBUG)
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).expect("something went wrong");
+
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;
     // Generate the list of routes in your Leptos App
@@ -24,7 +30,7 @@ async fn main() -> std::io::Result<()> {
     let secret_key = Key::generate();
 
     if let Err(e) = database::init_db().await {
-        error!("failed to connect to DB: {e:?}");
+        tracing::error!("failed to connect to DB: {e:?}");
     };
 
     HttpServer::new(move || {
