@@ -2,9 +2,9 @@ use surrealdb::{engine::remote::ws::Client, Surreal};
 
 use crate::services::database::DB;
 
-const NS_NAME: &str = "aoc-website";
+const NS_NAME: &str = "aoc_website";
 
-const DB_NAME: &str = "aoc-website";
+const DB_NAME: &str = "aoc_website";
 
 pub async fn use_database<'a>() -> &'a Surreal<Client> {
     let connection = DB
