@@ -60,12 +60,13 @@ impl LoggedInRepository {
             ))
             .await
         {
-            error!(
-                "Error creating a relation between user ({}) and session ({}): {e:?}",
-                user, session
+            tracing::error!(
+                "failed to creat a relation between user ({}) and session ({}): {e:?}",
+                user,
+                session
             );
             if let Err(e) = SessionRepository::delete(session).await {
-                error!("Error deleting session ({session}): {e:?}");
+                tracing::error!("failed to delete session ({session}): {e:?}");
             };
             return Err(());
         };

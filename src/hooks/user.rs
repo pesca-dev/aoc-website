@@ -6,12 +6,12 @@ use super::use_identity;
 
 pub async fn use_user(cx: Scope) -> Option<User> {
     let Ok(identity) = use_identity(cx) else {
-        error!("failed to get identity");
+        tracing::error!("failed to get identity");
         return None;
     };
 
     let Ok(session_id) = identity.id() else {
-        error!("failed to get session id!");
+        tracing::error!("failed to get session id!");
         return None;
     };
 

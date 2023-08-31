@@ -24,7 +24,13 @@ impl Session {
     }
 
     pub async fn new(user: &User) -> Option<Session> {
-        let Some(session) = SessionRepository::create().await.ok().flatten() else {
+        let Some(session) = (match SessionRepository::create().await {
+            Ok(session) => session,
+            Err(e) => {
+                tracing::error!("failed to create session: ({e:#?})");
+                return None;
+            }
+        }) else {
             return None;
         };
 
@@ -45,7 +51,7 @@ impl Session {
 
     pub async fn destroy(session_id: &str) {
         if let Err(e) = SessionRepository::delete(session_id).await {
-            error!("Error deleting session ({session_id}): {e:?}");
+            tracing::error!("Error deleting session ({session_id}): {e:?}");
         };
     }
 }

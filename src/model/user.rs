@@ -1,6 +1,5 @@
 use std::error::Error;
 
-use leptos::error;
 use serde::{Deserialize, Serialize};
 
 use crate::repository::UserRepository;
@@ -12,6 +11,7 @@ pub struct User {
     pub id: String,
     pub username: String,
     pub email: String,
+    pub email_verified: bool,
     pub password: String,
     pub sessions: Vec<Session>,
 }
@@ -39,6 +39,7 @@ impl User {
             username,
             password,
             email,
+            email_verified,
             ..
         } = user;
 
@@ -47,6 +48,7 @@ impl User {
             username,
             password,
             email,
+            email_verified,
             sessions: vec![],
         })
     }
@@ -65,6 +67,7 @@ impl User {
             username,
             password,
             email,
+            email_verified,
             ..
         } = user;
 
@@ -73,13 +76,23 @@ impl User {
             username,
             password,
             email,
+            email_verified,
             sessions: vec![],
         })
     }
 
+    pub async fn verify_email(&self) {
+        if let Err(e) = UserRepository::verify_email(&self.id).await {
+            tracing::error!(
+                "failed to verify email for user '{user_id}': {e:?}",
+                user_id = self.id
+            );
+        }
+    }
+
     pub async fn login(&mut self) -> Option<String> {
         let Some(session) = Session::new(self).await else {
-            error!("failed to login user ({})", self.id);
+            tracing::error!("failed to login user ({})", self.id);
             return None;
         };
 

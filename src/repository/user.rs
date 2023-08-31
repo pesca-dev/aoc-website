@@ -10,6 +10,7 @@ pub struct UserRepository {
     pub username: String,
     pub password: String,
     pub email: String,
+    pub email_verified: bool,
 }
 
 impl UserRepository {
@@ -47,23 +48,32 @@ impl UserRepository {
         result.take(0)
     }
 
+    pub async fn verify_email(user_id: &str) -> Result<(), surrealdb::Error> {
+        let db = use_database().await;
+
+        db.query(format!("UPDATE {user_id} SET email_verified = true"))
+            .await?;
+        Ok(())
+    }
+
     pub async fn create(
         username: String,
         password: String,
         email: String,
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
         let db = use_database().await;
-        let result: Vec<UserRepository> = db
+        let result: Option<UserRepository> = db
             .create(Self::TABLE)
             .content(UserRepository {
                 username,
                 password,
                 email,
+                email_verified: false,
                 ..Default::default()
             })
             .await?;
 
         // TODO: this should be changed in beta9
-        Ok(result.get(0).cloned())
+        Ok(result)
     }
 }

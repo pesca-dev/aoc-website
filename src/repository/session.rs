@@ -1,8 +1,7 @@
 use chrono::Utc;
-use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Thing;
+use surrealdb::sql::{thing, Thing};
 
 use crate::hooks::use_database;
 
@@ -22,7 +21,7 @@ impl SessionRepository {
 
     pub async fn create() -> Result<Option<SessionRepository>, surrealdb::Error> {
         let db = use_database().await;
-        let result: Vec<SessionRepository> = db
+        let result: Option<SessionRepository> = db
             .create(Self::TABLE)
             .content(SessionRepository {
                 created_at: Utc::now().to_rfc3339(),
@@ -30,11 +29,11 @@ impl SessionRepository {
             })
             .await?;
 
-        Ok(result.get(0).cloned())
+        Ok(result)
     }
 
     pub async fn delete(id: &str) -> Result<(), surrealdb::Error> {
-        let Ok(Thing { tb, id }) = Thing::from_str(id) else {
+        let Ok(Thing { tb, id }) = thing(id) else {
             return Ok(());
         };
 
