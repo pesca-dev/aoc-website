@@ -148,6 +148,10 @@ input {
 button{
     --button-padding: 8px;
 
+    &:hover {
+        cursor: pointer;
+    }
+
     &.primary {
         background: var(--background-lvl-3);
         color: var(--text-color);
@@ -158,6 +162,10 @@ button{
         box-shadow: 0 0 10px var(--shadow-level-0);
 
         padding: var(--button-padding);
+
+        &:hover {
+            box-shadow: 0 0 10px var(--shadow-level-1);
+        }
     }
 }
 
