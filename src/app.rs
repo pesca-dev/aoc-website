@@ -7,7 +7,7 @@ use crate::{
     contexts::AuthContextProvider,
     views::{
         CodeView, HomeView, ImpressumView, LoginView, LogoutView, ProfileView, RegisterView,
-        SettingsView,
+        SettingsView, VerifyView,
     },
 };
 
@@ -37,6 +37,7 @@ pub fn App(cx: Scope) -> impl IntoView {
                         <Route path="/settings" view=SettingsView ssr=SsrMode::Async/>
                         <Route path="/login" view=LoginView ssr=SsrMode::Async/>
                         <Route path="/register" view=RegisterView ssr=SsrMode::Async/>
+                        <Route path="/verify" view=VerifyView ssr=SsrMode::Async/>
                         <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
                         <Route path="/code" view=CodeView ssr=SsrMode::Async/>
                         <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>

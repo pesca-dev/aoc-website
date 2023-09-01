@@ -383,13 +383,16 @@ dependencies = [
  "chrono",
  "console_error_panic_hook",
  "dotenv",
+ "hmac",
  "http",
+ "jwt",
  "leptos",
  "leptos_actix",
  "leptos_meta",
  "leptos_router",
  "lettre",
  "serde",
+ "sha2",
  "surrealdb",
  "tracing",
  "tracing-subscriber",
@@ -1887,6 +1890,21 @@ dependencies = [
  "pest",
  "pest_derive",
  "serde",
+]
+
+[[package]]
+name = "jwt"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6204285f77fe7d9784db3fdc449ecce1a0114927a51d5a41c4c7a292011c015f"
+dependencies = [
+ "base64 0.13.1",
+ "crypto-common",
+ "digest",
+ "hmac",
+ "serde",
+ "serde_json",
+ "sha2",
 ]
 
 [[package]]

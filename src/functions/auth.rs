@@ -7,11 +7,12 @@ use serde::{Deserialize, Serialize};
 
 cfg_if! {
 if #[cfg(feature = "ssr")] {
+    use std::collections::BTreeMap;
     use actix_identity::IdentityExt;
     use crate::hooks::use_identity;
     use crate::utils::password::hash_password;
     use crate::model::{User, LoginError, Session};
-    use crate::services::mail::Mail;
+    use crate::services::{mail::Mail, jwt};
 }
 }
 
@@ -48,6 +49,17 @@ pub async fn register(
         return Ok(RegistrationResult::PasswordsDoNotMatch);
     }
 
+    // create JWT for verification mail
+    let mut claims = BTreeMap::new();
+    claims.insert("sub".into(), username.clone());
+    let token_str = match jwt::sign(claims) {
+        Ok(token) => token,
+        Err(e) => {
+            tracing::error!("failed to create JWT: {e:#?}");
+            return Ok(RegistrationResult::InternalServerError);
+        }
+    };
+
     if let Err(e) = (User {
         username: username.clone(),
         password: hash_password(password)?,
@@ -66,7 +78,7 @@ pub async fn register(
     let mail = Mail {
         subject: Some("Registration Mail".into()),
         recipient: email,
-        content: Some(format!("Hey {username}! \nThank you for registering! To complete your registration, please use the following link: TODO"))
+        content: Some(format!("Hey {username}! \nThank you for registering! To complete your registration, please use the following link: http://localhost:3000/verify?token={token_str}"))
     };
 
     if mail.send().is_err() {
@@ -148,4 +160,40 @@ pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
     identity.logout();
 
     Ok(())
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum VerificationResult {
+    Ok,
+    InvalidToken,
+    InternalServerError,
+}
+
+#[server(Verify, "/api")]
+pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult, ServerFnError> {
+    let payload = match jwt::extract(token) {
+        Ok(data) => data,
+        Err(e) => {
+            tracing::warn!("failed to extract JWT: {e:#?}");
+            return Ok(VerificationResult::InternalServerError);
+        }
+    };
+
+    let username = match payload.get("sub") {
+        Some(username) => username,
+        None => {
+            return Ok(VerificationResult::InvalidToken);
+        }
+    };
+
+    let user = match User::get_by_username(username).await {
+        Some(user) => user,
+        None => {
+            return Ok(VerificationResult::InvalidToken);
+        }
+    };
+
+    user.verify_email().await;
+
+    Ok(VerificationResult::Ok)
 }

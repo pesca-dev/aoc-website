@@ -4,5 +4,6 @@ cfg_if! {
 if #[cfg(feature = "ssr")] {
     pub mod database;
     pub mod mail;
+    pub mod jwt;
 }
 }
