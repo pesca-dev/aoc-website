@@ -23,3 +23,32 @@ pub fn extract(token: String) -> Result<BTreeMap<String, String>, Box<dyn Error>
 
     Ok(token.verify_with_key(&key)?)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use std::{collections::BTreeMap, env};
+
+    #[test]
+    fn test_jwt_sign() {
+        env::set_var("JWT_KEY", "some-key");
+
+        let mut claims = BTreeMap::new();
+        claims.insert("sub".to_string(), "some_user".to_string());
+        assert!(sign(claims).is_ok())
+    }
+
+    #[test]
+    fn test_jwt_extract() {
+        env::set_var("JWT_KEY", "some-key");
+
+        let mut claims = BTreeMap::new();
+        claims.insert("sub".to_string(), "some_user".to_string());
+
+        let token = sign(claims).unwrap();
+        let claims = extract(token).unwrap();
+
+        assert_eq!(claims["sub"], "some_user".to_string());
+    }
+}
