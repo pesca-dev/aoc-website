@@ -11,6 +11,7 @@ if #[cfg(feature = "ssr")] {
     use crate::hooks::use_identity;
     use crate::utils::password::hash_password;
     use crate::model::{User, LoginError, Session};
+    use crate::services::mail::Mail;
 }
 }
 
@@ -48,9 +49,9 @@ pub async fn register(
     }
 
     if let Err(e) = (User {
-        username,
+        username: username.clone(),
         password: hash_password(password)?,
-        email,
+        email: email.clone(),
         ..Default::default()
     })
     .create()
@@ -61,6 +62,16 @@ pub async fn register(
     }) {
         return Ok(e);
     };
+
+    let mail = Mail {
+        subject: Some("Registration Mail".into()),
+        recipient: email,
+        content: Some(format!("Hey {username}! \nThank you for registering! To complete your registration, please use the following link: TODO"))
+    };
+
+    if mail.send().is_err() {
+        return Ok(RegistrationResult::InternalServerError);
+    }
 
     Ok(RegistrationResult::Ok)
 }
