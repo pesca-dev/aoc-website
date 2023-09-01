@@ -1,7 +1,10 @@
 use leptos::*;
 use leptos_router::ActionForm;
 
-use crate::{functions::LoginResult, hooks::use_auth};
+use crate::{
+    functions::{LoginResult, ResendVerification},
+    hooks::use_auth,
+};
 
 #[component]
 pub fn LoginView(cx: Scope) -> impl IntoView {
@@ -30,6 +33,17 @@ pub fn LoginView(cx: Scope) -> impl IntoView {
 
     let is_ok = move || matches!(result(), Some(LoginResult::Ok));
 
+    let need_to_verify_email = move || matches!(result(), Some(LoginResult::VerifyEmail));
+
+    let (username, set_username) = create_signal(cx, "".to_string());
+    let (password, set_password) = create_signal(cx, "".to_string());
+
+    let resend_verification_email = move |_| {
+        auth.resend_verification_email.dispatch(ResendVerification {
+            username: username(),
+        });
+    };
+
     view! { cx,
         <Transition
             fallback=move || ()>
@@ -55,15 +69,37 @@ pub fn LoginView(cx: Scope) -> impl IntoView {
                                     >
                                         {message()}
                                     </div>
+                                    <Show
+                                        when=need_to_verify_email
+                                        fallback=|_| view! {cx, <></>}>
+                                        <a
+                                            href="#"
+                                            on:click=resend_verification_email
+                                            >"Resend Email"</a>
+                                    </Show>
                                 </Show>
                                 <h1>"Login"</h1>
                                 <label>
                                     <span>"Username"</span>
-                                    <input type="text" name="username" required/>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        prop:value=username
+                                        on:input=move |ev| {
+                                            set_username(event_target_value(&ev));
+                                        }
+                                        required/>
                                 </label>
                                 <label>
                                     <span>"Password"</span>
-                                    <input type="password" name="password" required/>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        prop:value=password
+                                        on:input=move |ev| {
+                                            set_password(event_target_value(&ev));
+                                        }
+                                        required/>
                                 </label>
                                 <button type="submit" class="primary">"Login"</button>
                             </ActionForm>
