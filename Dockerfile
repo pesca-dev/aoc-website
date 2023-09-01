@@ -5,6 +5,7 @@ WORKDIR /work
 COPY . .
 
 RUN cargo leptos build --release
+RUN apk add --no-cache ca-certificates
 
 ########################################
 ########################################
@@ -26,6 +27,7 @@ WORKDIR /app
 COPY --chown=10001:10001 --from=builder /work/target/site/ ./site/
 COPY --chown=10001:10001 --from=builder /work/target/server/release/aoc_website .
 COPY --chown=10001:10001 --from=builder /work/Cargo.toml .
+COPY --chown=10001:10001 --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # depends on the port you choose
 EXPOSE 3000
