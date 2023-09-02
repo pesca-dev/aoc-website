@@ -28,30 +28,37 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Script src="https://unpkg.com/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"/>
 
         <AuthContextProvider>
-            <Router>
-                <Navigation />
-                <main>
-                    <Routes>
-                        <Route path="" view=HomeView ssr=SsrMode::Async/>
-                        <Route path="/profile" view=ProfileView ssr=SsrMode::Async/>
-                        <Route path="/settings" view=SettingsView ssr=SsrMode::Async/>
-                        <Route path="/login" view=LoginView ssr=SsrMode::Async/>
-                        <Route path="/register" view=RegisterView ssr=SsrMode::Async/>
-                        <Route path="/verify" view=VerifyView ssr=SsrMode::Async/>
-                        <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
-                        <Route path="/code" view=CodeView ssr=SsrMode::Async/>
-                        <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>
-                        <Route path="/impressum" view=ImpressumView ssr=SsrMode::Async/>
-                        <Route path="/*any" view=NotFound ssr=SsrMode::Async/>
-                    </Routes>
-                </main>
-                <div class="footer">
-                    <ul>
-                        <a href="/impressum">"Impressum & Datenschutz"</a>
-                    </ul>
-                </div>
-            </Router>
+            <SiteRouter />
         </AuthContextProvider>
+    }
+}
+
+#[component]
+pub fn SiteRouter(cx: Scope) -> impl IntoView {
+    view! { cx,
+        <Router>
+            <Navigation />
+            <main>
+                <Routes>
+                    <Route path="" view=HomeView ssr=SsrMode::Async/>
+                    <Route path="/profile" view=ProfileView ssr=SsrMode::Async/>
+                    <Route path="/settings" view=SettingsView ssr=SsrMode::Async/>
+                    <Route path="/login" view=LoginView ssr=SsrMode::Async/>
+                    <Route path="/register" view=RegisterView ssr=SsrMode::Async/>
+                    <Route path="/verify" view=VerifyView ssr=SsrMode::Async/>
+                    <Route path="/logout" view=LogoutView ssr=SsrMode::Async/>
+                    <Route path="/code" view=CodeView ssr=SsrMode::Async/>
+                    <Route path="/code/:user" view=CodeView ssr=SsrMode::Async/>
+                    <Route path="/impressum" view=ImpressumView ssr=SsrMode::Async/>
+                    <Route path="/*any" view=NotFound ssr=SsrMode::Async/>
+                </Routes>
+            </main>
+            <div class="footer">
+                <ul>
+                    <a href="/impressum">"Impressum & Datenschutz"</a>
+                </ul>
+            </div>
+        </Router>
     }
 }
 
