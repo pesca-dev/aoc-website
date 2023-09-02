@@ -11,7 +11,7 @@ RUN apk add --no-cache ca-certificates
 ########################################
 ########################################
 
-FROM scratch as app
+FROM alpine:3.18.3 as app
 LABEL org.opencontainers.image.source="https://github.com/pesca-dev/aoc-website"
 
 ENV LEPTOS_OUTPUT_NAME=aoc_website
