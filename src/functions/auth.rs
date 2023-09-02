@@ -8,18 +8,20 @@ use serde::{Deserialize, Serialize};
 cfg_if! {
 if #[cfg(feature = "ssr")] {
     use std::error::Error;
-    use std::collections::BTreeMap;
     use actix_identity::IdentityExt;
+    use chrono::Duration;
     use crate::hooks::use_identity;
     use crate::utils::password::hash_password;
     use crate::model::{User, LoginError, Session};
-    use crate::services::{mail::Mail, jwt};
+    use crate::services::{mail::Mail, jwt, jwt::VerifyJWT};
 
     #[tracing::instrument(level = "trace")]
     fn create_jwt(username: &str) -> Result<String, Box<dyn Error>> {
         tracing::debug!("creating jwt");
-        let mut claims = BTreeMap::new();
-        claims.insert("sub".into(), username.to_string());
+        let claims = VerifyJWT {
+            sub: username.to_string(),
+            exp: (chrono::Utc::now().naive_local() + Duration::minutes(15)).timestamp(),
+        };
         jwt::sign(claims)
     }
 
@@ -183,28 +185,32 @@ pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
 pub enum VerificationResult {
     Ok,
     InvalidToken,
+    ExpiredToken,
     InternalServerError,
 }
 
 #[tracing::instrument(level = "trace", skip(cx))]
 #[server(Verify, "/api")]
 pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult, ServerFnError> {
-    let payload = match jwt::extract(token) {
+    let payload: VerifyJWT = match jwt::extract(token) {
         Ok(data) => data,
         Err(e) => {
             tracing::warn!("failed to extract JWT: {e:#?}");
-            return Ok(VerificationResult::InternalServerError);
-        }
-    };
-
-    let username = match payload.get("sub") {
-        Some(username) => username,
-        None => {
             return Ok(VerificationResult::InvalidToken);
         }
     };
 
-    let user = match User::get_by_username(username).await {
+    let timestamp = payload.exp;
+    let now = chrono::Utc::now().timestamp();
+
+    let is_valid = (now - timestamp) > 0;
+    if !is_valid {
+        // TODO: add message for that
+        return Ok(VerificationResult::ExpiredToken);
+    }
+
+    let username = payload.sub;
+    let user = match User::get_by_username(&username).await {
         Some(user) => user,
         None => {
             return Ok(VerificationResult::InvalidToken);
