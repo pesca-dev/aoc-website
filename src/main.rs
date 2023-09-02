@@ -15,12 +15,15 @@ async fn main() -> std::io::Result<()> {
     use aoc_website::{app::*, services::database};
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
+    use tracing_subscriber::{filter, prelude::*};
 
-    let subscriber = tracing_subscriber::fmt()
-        .with_max_level(tracing::metadata::LevelFilter::DEBUG)
-        .finish();
+    let filter =
+        filter::Targets::new().with_target("aoc_website", tracing::metadata::LevelFilter::TRACE);
 
-    tracing::subscriber::set_global_default(subscriber).expect("something went wrong");
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(filter)
+        .init();
 
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;

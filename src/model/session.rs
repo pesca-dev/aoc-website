@@ -12,8 +12,11 @@ pub struct Session {
 }
 
 impl Session {
+    #[tracing::instrument(level = "trace")]
     pub async fn find_by_id(id: &str) -> Option<Session> {
+        tracing::debug!("get session '{id}'");
         let Some(user) = LoggedInRepository::find_user_via_session(id).await else {
+            tracing::debug!("session not found");
             return None;
         };
 
@@ -23,6 +26,7 @@ impl Session {
         })
     }
 
+    #[tracing::instrument(level = "trace", skip(user))]
     pub async fn new(user: &User) -> Option<Session> {
         let Some(session) = (match SessionRepository::create().await {
             Ok(session) => session,
@@ -40,6 +44,10 @@ impl Session {
             .await
             .is_err()
         {
+            tracing::error!(
+                "failed to attach user '{user}' to session '{session_id}'",
+                user = user.id
+            );
             return None;
         };
 
@@ -49,6 +57,7 @@ impl Session {
         })
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn destroy(session_id: &str) {
         if let Err(e) = SessionRepository::delete(session_id).await {
             tracing::error!("Error deleting session ({session_id}): {e:?}");

@@ -5,6 +5,7 @@ use lettre::{
     SmtpTransport, Transport,
 };
 
+#[derive(Debug, Clone)]
 pub struct Mail {
     pub subject: Option<String>,
     pub recipient: String,
@@ -12,7 +13,9 @@ pub struct Mail {
 }
 
 impl Mail {
+    #[tracing::instrument(level = "trace")]
     pub fn send(self) -> Result<(), Box<dyn Error>> {
+        tracing::debug!("sending mail");
         let mail_user = env::var("MAIL_USER").unwrap();
         let mail_pass = env::var("MAIL_PASS").unwrap();
         let mail_server = env::var("MAIL_SERVER").unwrap();

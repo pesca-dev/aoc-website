@@ -12,12 +12,14 @@ fn key() -> Result<Hmac<Sha256>, Box<dyn Error>> {
     Ok(Hmac::new_from_slice(key.as_bytes())?)
 }
 
+#[tracing::instrument(level = "trace")]
 pub fn sign(claims: BTreeMap<String, String>) -> Result<String, Box<dyn Error>> {
     let key = key()?;
 
     Ok(claims.sign_with_key(&key)?)
 }
 
+#[tracing::instrument(level = "trace")]
 pub fn extract(token: String) -> Result<BTreeMap<String, String>, Box<dyn Error>> {
     let key = key()?;
 

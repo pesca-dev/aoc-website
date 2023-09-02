@@ -4,9 +4,10 @@ use crate::{model::User, repository::LoggedInRepository};
 
 use super::use_identity;
 
+#[tracing::instrument(level = "trace", skip(cx))]
 pub async fn use_user(cx: Scope) -> Option<User> {
     let Ok(identity) = use_identity(cx) else {
-        tracing::error!("failed to get identity");
+        tracing::debug!("no identity attached to current context");
         return None;
     };
 

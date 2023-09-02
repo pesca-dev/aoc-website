@@ -2,6 +2,7 @@ use actix_identity::{Identity, IdentityExt};
 use leptos::*;
 
 /// Try to get the identity depending on the current context.
+#[tracing::instrument(level = "trace", skip(cx))]
 pub fn use_identity(cx: Scope) -> Result<Identity, ServerFnError> {
     let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
         return Err(ServerFnError::MissingArg(

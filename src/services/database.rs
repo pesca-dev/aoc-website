@@ -8,7 +8,9 @@ use surrealdb::{
 
 pub static DB: OnceLock<Surreal<Client>> = OnceLock::new();
 
+#[tracing::instrument(level = "trace")]
 pub async fn init_db() -> Result<(), surrealdb::Error> {
+    tracing::debug!("initializing connection to database");
     let connection =
         Surreal::new::<Ws>(env::var("SURREAL_HOST").expect("no surreal url db user given")).await?;
 

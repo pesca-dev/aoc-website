@@ -15,11 +15,14 @@ pub struct SessionRepository {
 impl SessionRepository {
     const TABLE: &str = "session";
 
+    #[tracing::instrument(level = "trace")]
     pub fn id(&self) -> Option<String> {
         self.id.as_ref().map(|id| format!("{}:{}", id.tb, id.id))
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn create() -> Result<Option<SessionRepository>, surrealdb::Error> {
+        tracing::debug!("inserting new session into database");
         let db = use_database().await;
         let result: Option<SessionRepository> = db
             .create(Self::TABLE)
@@ -32,7 +35,9 @@ impl SessionRepository {
         Ok(result)
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn delete(id: &str) -> Result<(), surrealdb::Error> {
+        tracing::debug!("deleting session '{id}' from database");
         let Ok(Thing { tb, id }) = thing(id) else {
             return Ok(());
         };

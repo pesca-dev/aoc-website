@@ -24,7 +24,9 @@ struct LoggedInModel {
 impl LoggedInRepository {
     const TABLE: &str = "logged_in";
 
+    #[tracing::instrument(level = "trace")]
     pub async fn find_user_via_session(session_id: &str) -> Option<User> {
+        tracing::debug!("getting session '{session_id}' from database");
         let db = use_database().await;
 
         let Ok(mut response) = db
@@ -35,22 +37,29 @@ impl LoggedInRepository {
             ))
             .await
         else {
+            tracing::debug!("did not receive response from query");
             return None;
         };
 
         let Ok(Some(result)): Result<Option<LoggedInModel>, surrealdb::Error> = response.take(0)
         else {
+            tracing::debug!("response did not contain session");
             return None;
         };
 
         let Some(user) = result.users.get(0) else {
+            tracing::debug!("session is not linked to any user");
             return None;
         };
 
-        User::get_by_id(user.id.clone()).await
+        User::get_by_id(&user.id.to_string()).await
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn attach_user_to_session(user: &str, session: &str) -> Result<(), ()> {
+        tracing::debug!(
+            "insert relation between user '{user}' and session '{session}' in database"
+        );
         let db = use_database().await;
 
         if let Err(e) = db
@@ -61,7 +70,7 @@ impl LoggedInRepository {
             .await
         {
             tracing::error!(
-                "failed to creat a relation between user ({}) and session ({}): {e:?}",
+                "failed to create a relation between user ({}) and session ({}): {e:?}",
                 user,
                 session
             );

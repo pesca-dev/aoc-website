@@ -15,14 +15,17 @@ if #[cfg(feature = "ssr")] {
     use crate::model::{User, LoginError, Session};
     use crate::services::{mail::Mail, jwt};
 
+    #[tracing::instrument(level = "trace")]
     fn create_jwt(username: &str) -> Result<String, Box<dyn Error>> {
+        tracing::debug!("creating jwt");
         let mut claims = BTreeMap::new();
         claims.insert("sub".into(), username.to_string());
         jwt::sign(claims)
     }
 
+    #[tracing::instrument(level = "trace")]
     fn send_verification_mail(username: String, email: String, token: String) -> Result<(), Box<dyn Error>> {
-
+        tracing::debug!("sending verification mail for '{username}' to '{email}'");
         let mail = Mail {
             subject: Some("Registration Mail".into()),
             recipient: email,
@@ -55,6 +58,7 @@ impl Display for RegistrationResult {
     }
 }
 
+#[tracing::instrument(level = "trace", skip(cx, password, password_confirm))]
 #[server(Register, "/api")]
 pub async fn register(
     cx: Scope,
@@ -63,6 +67,7 @@ pub async fn register(
     password_confirm: String,
     email: String,
 ) -> Result<RegistrationResult, ServerFnError> {
+    tracing::debug!("attempting to register user...");
     if password != password_confirm {
         return Ok(RegistrationResult::PasswordsDoNotMatch);
     }
@@ -121,6 +126,7 @@ impl Display for LoginResult {
     }
 }
 
+#[tracing::instrument(level = "trace", skip(cx, password))]
 #[server(Login, "/api")]
 pub async fn login(
     cx: Scope,
@@ -158,6 +164,7 @@ pub async fn login(
     return Ok(LoginResult::Ok);
 }
 
+#[tracing::instrument(level = "trace", skip(cx))]
 #[server(Logout, "/api")]
 pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
     let Ok(identity) = use_identity(cx) else {
@@ -179,6 +186,7 @@ pub enum VerificationResult {
     InternalServerError,
 }
 
+#[tracing::instrument(level = "trace", skip(cx))]
 #[server(Verify, "/api")]
 pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult, ServerFnError> {
     let payload = match jwt::extract(token) {
@@ -208,6 +216,7 @@ pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult,
     Ok(VerificationResult::Ok)
 }
 
+#[tracing::instrument(level = "trace", skip(cx))]
 #[server(ResendVerification, "/api")]
 pub async fn resend_verification_mail(cx: Scope, username: String) -> Result<(), ServerFnError> {
     let Some(user) = User::get_by_username(&username).await else {

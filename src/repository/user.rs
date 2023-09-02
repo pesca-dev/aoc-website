@@ -20,13 +20,20 @@ impl UserRepository {
         self.id.as_ref().map(|id| format!("{}:{}", id.tb, id.id))
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn get_all() -> Result<Vec<UserRepository>, surrealdb::Error> {
+        tracing::debug!("getting all users from the database");
         let db = use_database().await;
 
         db.select(Self::TABLE).await
     }
 
-    pub async fn get_by_id(id: impl ToString) -> Result<Option<UserRepository>, surrealdb::Error> {
+    #[tracing::instrument(level = "trace")]
+    pub async fn get_by_id(id: &str) -> Result<Option<UserRepository>, surrealdb::Error> {
+        tracing::debug!(
+            "trying to get user '{id}' from the database",
+            id = id.to_string()
+        );
         let db = use_database().await;
 
         let result: Option<UserRepository> = db.select((Self::TABLE, id.to_string())).await?;
@@ -34,9 +41,14 @@ impl UserRepository {
         Ok(result)
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn get_by_username(
-        username: impl ToString,
+        username: &str,
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
+        tracing::debug!(
+            "trying to get user '{username}' from the database",
+            username = username.to_string()
+        );
         let db = use_database().await;
 
         let mut result = db
@@ -48,7 +60,9 @@ impl UserRepository {
         result.take(0)
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn verify_email(user_id: &str) -> Result<(), surrealdb::Error> {
+        tracing::debug!("verify email in DB for '{user_id}'");
         let db = use_database().await;
 
         db.query(format!("UPDATE {user_id} SET email_verified = true"))
@@ -56,11 +70,13 @@ impl UserRepository {
         Ok(())
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn create(
         username: String,
         password: String,
         email: String,
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
+        tracing::debug!("creating user in database");
         let db = use_database().await;
         let result: Option<UserRepository> = db
             .create(Self::TABLE)
@@ -73,7 +89,6 @@ impl UserRepository {
             })
             .await?;
 
-        // TODO: this should be changed in beta9
         Ok(result)
     }
 }

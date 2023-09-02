@@ -19,7 +19,9 @@ pub struct User {
 }
 
 impl User {
+    #[tracing::instrument(level = "trace")]
     pub async fn create(self) -> Result<(), Box<dyn Error>> {
+        tracing::debug!("creating user");
         let User {
             username,
             email,
@@ -31,7 +33,9 @@ impl User {
         Ok(())
     }
 
-    pub async fn get_by_id(id: impl ToString) -> Option<User> {
+    #[tracing::instrument(level = "trace")]
+    pub async fn get_by_id(id: &str) -> Option<User> {
+        tracing::debug!("getting user by id");
         let Some(user) = UserRepository::get_by_id(id).await.ok().flatten() else {
             return None;
         };
@@ -55,7 +59,9 @@ impl User {
         })
     }
 
-    pub async fn get_by_username(username: impl ToString) -> Option<User> {
+    #[tracing::instrument(level = "trace")]
+    pub async fn get_by_username(username: &str) -> Option<User> {
+        tracing::debug!("getting user by username");
         let Some(user) = UserRepository::get_by_username(username)
             .await
             .ok()
@@ -83,7 +89,9 @@ impl User {
         })
     }
 
+    #[tracing::instrument(level = "trace")]
     pub async fn verify_email(&self) {
+        tracing::debug!("verifying email");
         if let Err(e) = UserRepository::verify_email(&self.id).await {
             tracing::error!(
                 "failed to verify email for user '{user_id}': {e:?}",
@@ -92,13 +100,15 @@ impl User {
         }
     }
 
+    #[tracing::instrument(level = "trace", skip(password))]
     pub async fn login(&mut self, password: &str, req: &HttpRequest) -> Result<(), LoginError> {
+        tracing::debug!("logging user in");
         let Ok(true) = verify_password(password, &self.password) else {
             return Err(LoginError::PasswordMismatch);
         };
 
         let Some(session) = Session::new(self).await else {
-            // tracing::error!("failed to login user ({})", self.id);
+            tracing::error!("failed to login user ({})", self.id);
             return Err(LoginError::Internal);
         };
 

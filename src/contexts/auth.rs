@@ -24,6 +24,7 @@ pub struct AuthContext {
 }
 
 impl AuthContext {
+    #[tracing::instrument(level = "trace", skip(cx))]
     fn new(cx: Scope) -> Self {
         let login = create_server_action::<Login>(cx);
         let logout = create_server_action::<Logout>(cx);
@@ -54,6 +55,7 @@ impl AuthContext {
     }
 }
 
+#[tracing::instrument(level = "trace", skip(cx))]
 #[server(GetUserId, "/api")]
 async fn get_user_id(cx: Scope) -> Result<Option<String>, ServerFnError> {
     match use_user(cx).await {

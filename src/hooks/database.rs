@@ -6,6 +6,7 @@ const NS_NAME: &str = "aoc_website";
 
 const DB_NAME: &str = "aoc_website";
 
+#[tracing::instrument(level = "trace")]
 pub async fn use_database<'a>() -> &'a Surreal<Client> {
     let connection = DB
         .get()
