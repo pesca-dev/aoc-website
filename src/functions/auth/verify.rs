@@ -12,7 +12,7 @@ use crate::{
 #[cfg(feature = "ssr")]
 use super::{create_jwt, send_verification_mail};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum VerificationResult {
     Ok,
     InvalidToken,
@@ -23,7 +23,7 @@ pub enum VerificationResult {
 impl Display for VerificationResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            VerificationResult::Ok => f.write_str("Success!"),
+            VerificationResult::Ok => f.write_str("Success! You can now log in!"),
             VerificationResult::InvalidToken => f.write_str("Invalid Token Provided!"),
             VerificationResult::ExpiredToken => f.write_str("Expired Token Provided!"),
             VerificationResult::InternalServerError => f.write_str("Internal Server Error!"),
@@ -45,9 +45,8 @@ pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult,
     let timestamp = payload.exp;
     let now = chrono::Utc::now().timestamp();
 
-    let is_valid = (now - timestamp) > 0;
+    let is_valid = (timestamp - now) > 0;
     if !is_valid {
-        // TODO: add message for that
         return Ok(VerificationResult::ExpiredToken);
     }
 
