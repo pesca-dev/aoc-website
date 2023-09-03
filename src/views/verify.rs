@@ -16,10 +16,20 @@ pub fn VerifyView(cx: Scope) -> impl IntoView {
         });
     });
 
+    let return_value = move || match auth.verify.value().get() {
+        Some(Ok(message)) => Some(message),
+        _ => None,
+    };
+
+    let message = move || {
+        return_value()
+            .map(|msg| msg.to_string())
+            .unwrap_or("".into())
+    };
+
     view! { cx,
         <section>
-            <h1>"Success"</h1>
-            <p>"You can now login!"</p>
+            <h2>{message}</h2>
         </section>
     }
 }
