@@ -14,7 +14,7 @@ pub struct UserRepository {
 }
 
 impl UserRepository {
-    pub const TABLE: &str = "user";
+    pub const TABLE: &'static str = "user";
 
     pub fn id(&self) -> Option<String> {
         self.id.as_ref().map(|id| format!("{}:{}", id.tb, id.id))

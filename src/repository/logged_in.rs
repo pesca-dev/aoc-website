@@ -22,7 +22,7 @@ struct LoggedInModel {
 }
 
 impl LoggedInRepository {
-    const TABLE: &str = "logged_in";
+    const TABLE: &'static str = "logged_in";
 
     #[tracing::instrument(level = "trace")]
     pub async fn find_user_via_session(session_id: &str) -> Option<User> {

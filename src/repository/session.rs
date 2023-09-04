@@ -13,7 +13,7 @@ pub struct SessionRepository {
 }
 
 impl SessionRepository {
-    const TABLE: &str = "session";
+    const TABLE: &'static str = "session";
 
     #[tracing::instrument(level = "trace")]
     pub fn id(&self) -> Option<String> {
