@@ -1,4 +1,4 @@
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 
 use serde::{Deserialize, Serialize};
 use surrealdb::sql::{thing, Thing};
@@ -9,7 +9,7 @@ use crate::hooks::use_database;
 pub struct SessionRepository {
     #[serde(skip_serializing)]
     id: Option<Thing>,
-    created_at: String,
+    created_at: DateTime<Utc>,
 }
 
 impl SessionRepository {
@@ -24,15 +24,15 @@ impl SessionRepository {
     pub async fn create() -> Result<Option<SessionRepository>, surrealdb::Error> {
         tracing::debug!("inserting new session into database");
         let db = use_database().await;
-        let result: Option<SessionRepository> = db
+        let result: Vec<SessionRepository> = db
             .create(Self::TABLE)
             .content(SessionRepository {
-                created_at: Utc::now().to_rfc3339(),
+                created_at: Utc::now(),
                 ..Default::default()
             })
             .await?;
 
-        Ok(result)
+        Ok(result.get(0).cloned())
     }
 
     #[tracing::instrument(level = "trace")]

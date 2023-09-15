@@ -78,7 +78,7 @@ impl UserRepository {
     ) -> Result<Option<UserRepository>, surrealdb::Error> {
         tracing::debug!("creating user in database");
         let db = use_database().await;
-        let result: Option<UserRepository> = db
+        let result: Vec<UserRepository> = db
             .create(Self::TABLE)
             .content(UserRepository {
                 username,
@@ -89,6 +89,6 @@ impl UserRepository {
             })
             .await?;
 
-        Ok(result)
+        Ok(result.get(0).cloned())
     }
 }
