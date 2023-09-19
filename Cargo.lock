@@ -88,7 +88,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "36e1cc6f95e245b2f3c6995df4e1c0c697704c48c28ec325d135a3ca039d4952"
 dependencies = [
  "actix-service",
- "actix-session 0.8.0",
+ "actix-session",
  "actix-utils",
  "actix-web",
  "derive_more",
@@ -156,23 +156,6 @@ dependencies = [
  "futures-core",
  "paste",
  "pin-project-lite",
-]
-
-[[package]]
-name = "actix-session"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43da8b818ae1f11049a4d218975345fe8e56ce5a5f92c11f972abcff5ff80e87"
-dependencies = [
- "actix-service",
- "actix-utils",
- "actix-web",
- "anyhow",
- "async-trait",
- "derive_more",
- "serde",
- "serde_json",
- "tracing",
 ]
 
 [[package]]
@@ -393,7 +376,7 @@ version = "0.1.0"
 dependencies = [
  "actix-files",
  "actix-identity",
- "actix-session 0.7.2",
+ "actix-session",
  "actix-web",
  "argon2",
  "cfg-if",
