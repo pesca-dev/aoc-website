@@ -3,10 +3,10 @@ use leptos::*;
 use crate::{components::Svg, hooks::use_auth};
 
 #[component]
-pub fn Navigation(cx: Scope) -> impl IntoView {
-    let auth = use_auth(cx);
+pub fn Navigation() -> impl IntoView {
+    let auth = use_auth();
 
-    view! { cx,
+    view! {
         <nav>
             <ul>
                 <li>
@@ -31,8 +31,8 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                 <Transition
                     fallback=move || ()>
                         {move || {
-                            let user = auth.user.read(cx);
-                            view!{ cx,
+                            let user = auth.user.get();
+                            view!{
                                 <details>
                                     <summary>
                                         <span class="nav-label">{user.clone()}</span>
@@ -43,7 +43,7 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                                     <aside>
                                     {move || {
                                         if let Some(Ok(_)) = user {
-                                            view!{ cx,
+                                            view!{
                                                 <ul>
                                                     <li>
                                                         <a href="/profile">
@@ -63,7 +63,7 @@ pub fn Navigation(cx: Scope) -> impl IntoView {
                                                 </ul>
                                             }
                                         } else {
-                                            view!{ cx,
+                                            view!{
                                                 <ul>
                                                     <li>
                                                         <a href="/login">

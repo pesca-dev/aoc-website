@@ -32,21 +32,20 @@ impl Display for LoginResult {
     }
 }
 
-#[tracing::instrument(level = "trace", skip(cx, password))]
-#[server(Login, "/api")]
+#[tracing::instrument(level = "trace", skip(password))]
+#[server]
 pub async fn login(
-    cx: Scope,
     username: String,
     password: String,
 ) -> Result<LoginResult, ServerFnError> {
-    let Some(req) = use_context::<actix_web::HttpRequest>(cx) else {
+    let Some(req) = use_context::<actix_web::HttpRequest>() else {
         return Ok(LoginResult::InternalServerError);
     };
 
     let ident = IdentityExt::get_identity(&req);
 
     if ident.is_ok() {
-        leptos_actix::redirect(cx, "/");
+        leptos_actix::redirect( "/");
         return Ok(LoginResult::AlreadyLoggedIn);
     }
 
@@ -66,6 +65,6 @@ pub async fn login(
         Ok(_) => (),
     };
 
-    leptos_actix::redirect(cx, "/");
+    leptos_actix::redirect("/");
     return Ok(LoginResult::Ok);
 }

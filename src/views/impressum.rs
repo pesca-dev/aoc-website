@@ -1,8 +1,8 @@
 use leptos::*;
 
 #[component]
-pub fn ImpressumView(cx: Scope) -> impl IntoView {
-    view! { cx,
+pub fn ImpressumView() -> impl IntoView {
+    view! {
         <section class="impressum">
             <div>
                 <h1>"Datenschutzerklärung"</h1>

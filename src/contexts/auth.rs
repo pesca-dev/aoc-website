@@ -3,7 +3,7 @@ use cfg_if::cfg_if;
 use leptos::*;
 
 use crate::functions::{
-    Login, LoginResult, Logout, Register, RegistrationResult, ResendVerification,
+    Login, LoginResult, Logout, Register, RegistrationResult, ResendVerificationMail,
     VerificationResult, Verify,
 };
 
@@ -19,21 +19,20 @@ pub struct AuthContext {
     pub register: Action<Register, Result<RegistrationResult, ServerFnError>>,
     pub logout: Action<Logout, Result<(), ServerFnError>>,
     pub verify: Action<Verify, Result<VerificationResult, ServerFnError>>,
-    pub resend_verification_email: Action<ResendVerification, Result<(), ServerFnError>>,
+    pub resend_verification_email: Action<ResendVerificationMail, Result<(), ServerFnError>>,
     pub user: Resource<(usize, usize, usize), Result<Option<String>, ServerFnError>>,
 }
 
 impl AuthContext {
-    #[tracing::instrument(level = "trace", skip(cx))]
-    fn new(cx: Scope) -> Self {
-        let login = create_server_action::<Login>(cx);
-        let logout = create_server_action::<Logout>(cx);
-        let register = create_server_action::<Register>(cx);
-        let verify = create_server_action::<Verify>(cx);
-        let resend_verification_email = create_server_action::<ResendVerification>(cx);
+    #[tracing::instrument(level = "trace")]
+    fn new() -> Self {
+        let login = create_server_action::<Login>();
+        let logout = create_server_action::<Logout>();
+        let register = create_server_action::<Register>();
+        let verify = create_server_action::<Verify>();
+        let resend_verification_email = create_server_action::<ResendVerificationMail>();
 
         let user = create_resource(
-            cx,
             move || {
                 (
                     login.version().get(),
@@ -41,7 +40,7 @@ impl AuthContext {
                     register.version().get(),
                 )
             },
-            move |_| get_user_id(cx),
+            move |_| get_user_id(),
         );
 
         AuthContext {
@@ -55,15 +54,15 @@ impl AuthContext {
     }
 }
 
-#[tracing::instrument(level = "trace", skip(cx))]
-#[server(GetUserId, "/api")]
-async fn get_user_id(cx: Scope) -> Result<Option<String>, ServerFnError> {
-    match use_user(cx).await {
+#[tracing::instrument(level = "trace")]
+#[server]
+async fn get_user_id() -> Result<Option<String>, ServerFnError> {
+    match use_user().await {
         Some(user) => {
             return Ok(Some(user.username));
         }
         None => {
-            let identity = use_identity(cx)?;
+            let identity = use_identity()?;
             identity.logout();
             return Err(ServerFnError::ServerError("Inactive session!".to_string()));
         }
@@ -72,8 +71,8 @@ async fn get_user_id(cx: Scope) -> Result<Option<String>, ServerFnError> {
 
 /// Provide an AuthContext for use in child components.
 #[component]
-pub fn AuthContextProvider(cx: Scope, children: Children) -> impl IntoView {
-    provide_context(cx, AuthContext::new(cx));
+pub fn AuthContextProvider(children: Children) -> impl IntoView {
+    provide_context(AuthContext::new());
 
-    children(cx)
+    children()
 }

@@ -4,13 +4,13 @@ use leptos_router::*;
 use crate::{app::CODE, components::CodeSidebar};
 
 #[component]
-pub fn CodeView(cx: Scope) -> impl IntoView {
-    let query = use_params_map(cx);
+pub fn CodeView() -> impl IntoView {
+    let query = use_params_map();
     let user = move || query.with(|params| params.get("user").cloned().unwrap_or_default());
 
-    view! { cx,
+    view! {
         <CodeSidebar />
-        <Show when=move || user().trim() != "" fallback=move |cx| view! { cx, <section>Select a user...</section>}>
+        <Show when=move || user().trim() != "" fallback=move || view! { <section>Select a user...</section>}>
             {Prism::highlight_all()}
             <section class="code-overview">
                 <ul>

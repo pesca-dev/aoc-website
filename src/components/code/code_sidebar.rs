@@ -4,8 +4,8 @@ use leptos_router::*;
 use crate::components::Sidebar;
 
 #[component]
-pub fn CodeSidebar(cx: Scope) -> impl IntoView {
-    let params = use_params_map(cx);
+pub fn CodeSidebar() -> impl IntoView {
+    let params = use_params_map();
     let user = move || params.with(|params| params.get("user").cloned().unwrap_or_default());
 
     let names = vec![
@@ -28,9 +28,9 @@ pub fn CodeSidebar(cx: Scope) -> impl IntoView {
         "skgland",
     ];
 
-    let (users, _) = create_signal(cx, names);
+    let (users, _) = create_signal(names);
 
-    view! { cx,
+    view! {
         <Sidebar>
             <header><h3>Users</h3></header>
             <div class="day">
@@ -47,11 +47,11 @@ pub fn CodeSidebar(cx: Scope) -> impl IntoView {
                 </select>
             </div>
             <ul>
-                <For each=users key=|name| name.to_owned() view=move|cx, name| {
+                <For each=users key=|name| name.to_owned() children=move |name| {
                     let is_active = move || name == user();
                     let link = move || format!("/code/{name}");
 
-                    view! {cx,
+                    view! {
                         <li>
                             <a href=link class:active=is_active>{name}</a>
                         </li>
