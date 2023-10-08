@@ -3,10 +3,10 @@ use leptos::*;
 #[cfg(feature = "ssr")]
 use crate::{hooks::use_identity, model::Session};
 
-#[tracing::instrument(level = "trace", skip(cx))]
-#[server(Logout, "/api")]
-pub async fn logout(cx: Scope) -> Result<(), ServerFnError> {
-    let Ok(identity) = use_identity(cx) else {
+#[tracing::instrument(level = "trace")]
+#[server]
+pub async fn logout() -> Result<(), ServerFnError> {
+    let Ok(identity) = use_identity() else {
         return Ok(());
     };
 

@@ -31,9 +31,9 @@ impl Display for VerificationResult {
     }
 }
 
-#[tracing::instrument(level = "trace", skip(cx))]
-#[server(Verify, "/api")]
-pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult, ServerFnError> {
+#[tracing::instrument(level = "trace")]
+#[server]
+pub async fn verify(token: String) -> Result<VerificationResult, ServerFnError> {
     let payload: VerifyJWT = match jwt::extract(token) {
         Ok(data) => data,
         Err(e) => {
@@ -63,9 +63,9 @@ pub async fn verify_user(cx: Scope, token: String) -> Result<VerificationResult,
     Ok(VerificationResult::Ok)
 }
 
-#[tracing::instrument(level = "trace", skip(cx))]
-#[server(ResendVerification, "/api")]
-pub async fn resend_verification_mail(cx: Scope, username: String) -> Result<(), ServerFnError> {
+#[tracing::instrument(level = "trace")]
+#[server]
+pub async fn resend_verification_mail(username: String) -> Result<(), ServerFnError> {
     let Some(user) = User::get_by_username(&username).await else {
         return Ok(());
     };

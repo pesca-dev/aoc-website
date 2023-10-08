@@ -1,11 +1,11 @@
 use leptos::*;
 
 #[component]
-pub fn Sidebar(cx: Scope, children: Children) -> impl IntoView {
-    view! { cx,
+pub fn Sidebar(children: Children) -> impl IntoView {
+    view! {
         <section class="sidebar">
             <div>
-                {children(cx)}
+                {children()}
             </div>
         </section>
     }

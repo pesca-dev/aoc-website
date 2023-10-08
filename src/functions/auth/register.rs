@@ -31,10 +31,9 @@ impl Display for RegistrationResult {
     }
 }
 
-#[tracing::instrument(level = "trace", skip(cx, password, password_confirm))]
-#[server(Register, "/api")]
+#[tracing::instrument(level = "trace", skip(password, password_confirm))]
+#[server]
 pub async fn register(
-    cx: Scope,
     username: String,
     password: String,
     password_confirm: String,

@@ -2,13 +2,13 @@ use leptos::*;
 use leptos_router::ActionForm;
 
 use crate::{
-    functions::{LoginResult, ResendVerification},
+    functions::{LoginResult, ResendVerificationMail},
     hooks::use_auth,
 };
 
 #[component]
-pub fn LoginView(cx: Scope) -> impl IntoView {
-    let auth = use_auth(cx);
+pub fn LoginView() -> impl IntoView {
+    let auth = use_auth();
 
     let result = move || {
         let result = auth.login.value();
@@ -35,32 +35,32 @@ pub fn LoginView(cx: Scope) -> impl IntoView {
 
     let need_to_verify_email = move || matches!(result(), Some(LoginResult::VerifyEmail));
 
-    let (username, set_username) = create_signal(cx, "".to_string());
-    let (password, set_password) = create_signal(cx, "".to_string());
+    let (username, set_username) = create_signal("".to_string());
+    let (password, set_password) = create_signal("".to_string());
 
     let resend_verification_email = move |_| {
-        auth.resend_verification_email.dispatch(ResendVerification {
+        auth.resend_verification_email.dispatch(ResendVerificationMail {
             username: username(),
         });
     };
 
-    view! { cx,
+    view! {
         <Transition
             fallback=move || ()>
             {move || {
                 let condition = move || {
-                    let user = auth.user.read(cx);
+                    let user = auth.user.get();
                     !matches!(user, Some(Ok(_)))
                 };
-                view!{ cx,
+                view!{
                     <Show
                         when=condition
-                        fallback=|cx| view! { cx, <section>"Logged in"</section>}>
+                        fallback=|| view! { <section>"Logged in"</section>}>
                         <section class="login-view">
                             <ActionForm action=auth.login>
                                 <Show
                                     when=move || result().is_some()
-                                    fallback=|cx| view! { cx, <span></span> }
+                                    fallback=|| view! { <span></span> }
                                 >
                                     <div
                                         class="result"
@@ -71,7 +71,7 @@ pub fn LoginView(cx: Scope) -> impl IntoView {
                                     </div>
                                     <Show
                                         when=need_to_verify_email
-                                        fallback=|_| view! {cx, <></>}>
+                                        fallback=|| view! {<></>}>
                                         <a
                                             href="#"
                                             on:click=resend_verification_email

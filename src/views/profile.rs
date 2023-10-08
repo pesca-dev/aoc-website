@@ -1,8 +1,8 @@
 use leptos::*;
 
 #[component]
-pub fn ProfileView(cx: Scope) -> impl IntoView {
-    view! { cx,
+pub fn ProfileView() -> impl IntoView {
+    view! {
         <section>
             Profile Page
         </section>

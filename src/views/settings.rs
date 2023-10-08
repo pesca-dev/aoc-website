@@ -1,8 +1,8 @@
 use leptos::*;
 
 #[component]
-pub fn SettingsView(cx: Scope) -> impl IntoView {
-    view! { cx,
+pub fn SettingsView() -> impl IntoView {
+    view! {
         <section>
             Settings Page
         </section>

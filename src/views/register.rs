@@ -4,11 +4,11 @@ use leptos_router::ActionForm;
 use crate::{functions::RegistrationResult, hooks::use_auth};
 
 #[component]
-pub fn RegisterView(cx: Scope) -> impl IntoView {
-    let auth = use_auth(cx);
+pub fn RegisterView() -> impl IntoView {
+    let auth = use_auth();
 
     let condition = move || {
-        let user = auth.user.read(cx);
+        let user = auth.user.get();
         !matches!(user, Some(Ok(_)))
     };
 
@@ -35,19 +35,19 @@ pub fn RegisterView(cx: Scope) -> impl IntoView {
 
     let is_ok = move || matches!(result(), Some(RegistrationResult::Ok));
 
-    view! { cx,
+    view! {
         <Transition
             fallback=move || ()>
             {move || {
-                view!{ cx,
+                view!{
                     <Show
                         when=condition
-                        fallback=|cx| view! { cx, <section>"Logged in"</section>}>
+                        fallback=|| view! { <section>"Logged in"</section>}>
                         <section class="register-view">
                             <ActionForm action=auth.register>
                                 <Show
                                     when=move || result().is_some()
-                                    fallback=|cx| view! { cx, <span></span> }
+                                    fallback=|| view! { <span></span> }
                                 >
                                     <div
                                         class="result"
