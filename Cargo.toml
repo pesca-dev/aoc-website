@@ -2,6 +2,7 @@
 name = "aoc_website"
 version = "0.1.0"
 edition = "2021"
+authors = ["some test"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
