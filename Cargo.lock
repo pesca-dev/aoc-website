@@ -1905,9 +1905,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_actix"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "732e955ed2d9b8f4679b30bc76b1d3cefe0e6d4029368f676a729c49df48a622"
+checksum = "7f50f8c459143ef36c6dce5786e33e48d46dfb6829af87c985d65fb3b0b402aa"
 dependencies = [
  "actix-http",
  "actix-web",
@@ -1986,9 +1986,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_integration_utils"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f4aea05d1c0ed9e928b63b08cde9dabd8c35e9179e90ce21d6b5df2463ff59d"
+checksum = "eb816f3c809227b090b538994368a756d494c829b07c1bd312d07263552b8c87"
 dependencies = [
  "futures",
  "leptos",
@@ -2065,14 +2065,15 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a46de957a50e428c95f4fc924251743a5bac3279967fce331157848eb8cf85a2"
+checksum = "d5ca4422fdfba8af03d347d346f9364a4393ad36e227a018567192395285cf65"
 dependencies = [
  "cached",
  "cfg-if",
  "common_macros",
  "gloo-net",
+ "itertools 0.11.0",
  "js-sys",
  "lazy_static",
  "leptos",
