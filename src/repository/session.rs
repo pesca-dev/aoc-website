@@ -30,7 +30,9 @@ impl SessionRepository {
                 created_at: Utc::now().to_rfc3339(),
                 ..Default::default()
             })
-            .await?;
+            .await?
+            .first()
+            .cloned();
 
         Ok(result)
     }
