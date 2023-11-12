@@ -87,7 +87,9 @@ impl UserRepository {
                 email_verified: false,
                 ..Default::default()
             })
-            .await?;
+            .await?
+            .first()
+            .cloned();
 
         Ok(result)
     }

@@ -47,7 +47,7 @@ impl LoggedInRepository {
             return None;
         };
 
-        let Some(user) = result.users.get(0) else {
+        let Some(user) = result.users.first() else {
             tracing::debug!("session is not linked to any user");
             return None;
         };
