@@ -20,14 +20,12 @@ ENV LEPTOS_SITE_PKG_DIR=pkg
 ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
 ENV LEPTOS_RELOAD_PORT=3001
 
-USER 10001
-
 WORKDIR /app
 
-COPY --chown=10001:10001 --from=builder /work/target/site/ ./site/
-COPY --chown=10001:10001 --from=builder /work/target/release/aoc_website .
-COPY --chown=10001:10001 --from=builder /work/Cargo.toml .
-COPY --chown=10001:10001 --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /work/target/site/ ./site/
+COPY --from=builder /work/target/release/aoc_website .
+COPY --from=builder /work/Cargo.toml .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # depends on the port you choose
 EXPOSE 3000
