@@ -33,7 +33,7 @@ async fn main() -> std::io::Result<()> {
     let secret_key = Key::generate();
 
     if let Err(e) = database::init_db().await {
-        tracing::error!("failed to connect to DB: {e:?}");
+        panic!("failed to connect to DB: {e:?}");
     };
 
     HttpServer::new(move || {
