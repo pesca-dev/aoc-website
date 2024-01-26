@@ -2299,9 +2299,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_integration_utils"
-version = "0.5.6"
+version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8bba956f3b15dfedaa08dec54401db982d4e65ad6e5a62a5fa2dacd8af97be15"
+checksum = "fddda3a3b768dad90f80fb56ac6e250bc5c60755f8e3df225913aba4364ed7ee"
 dependencies = [
  "futures",
  "leptos",
@@ -2378,9 +2378,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.5.6"
+version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dde8af31661ea3144fc85e9d454f50ff2082d5550ddeee97522487d6fa218d9f"
+checksum = "b31087173c60e25c329a1c6786756dd9ee97750b378622df4d780db160a09040"
 dependencies = [
  "cached",
  "cfg-if",
