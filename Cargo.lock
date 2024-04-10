@@ -395,7 +395,7 @@ dependencies = [
  "leptos 0.5.7",
  "leptos_actix",
  "leptos_meta 0.6.11",
- "leptos_router",
+ "leptos_router 0.5.7",
  "lettre",
  "serde",
  "sha2",
@@ -2335,20 +2335,22 @@ dependencies = [
 
 [[package]]
 name = "leptos_actix"
-version = "0.5.6"
+version = "0.6.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76f9f13a40b6cb64cbb12efa5ba7be37b1a5d6c2e8d939bc3af24473979ad638"
+checksum = "5be151f99f7fb3a220152d976d23f815da93ae5879cfe8e6fa921455d1ed597c"
 dependencies = [
  "actix-http",
  "actix-web",
  "futures",
- "leptos 0.5.7",
- "leptos_integration_utils",
- "leptos_meta 0.5.7",
- "leptos_router",
+ "leptos 0.6.11",
+ "leptos_integration_utils 0.6.11",
+ "leptos_macro 0.6.11",
+ "leptos_meta 0.6.11",
+ "leptos_router 0.6.11",
  "parking_lot",
  "regex",
  "serde_json",
+ "server_fn 0.6.11",
  "tokio",
  "tracing",
 ]
@@ -2486,6 +2488,20 @@ dependencies = [
  "leptos_config 0.5.7",
  "leptos_hot_reload 0.5.7",
  "leptos_meta 0.5.7",
+ "tracing",
+]
+
+[[package]]
+name = "leptos_integration_utils"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1f504afe3e2ac30ca15ba9b74d27243e8919e93d1f78bad32e5e8ec23eaca4b"
+dependencies = [
+ "futures",
+ "leptos 0.6.11",
+ "leptos_config 0.6.11",
+ "leptos_hot_reload 0.6.11",
+ "leptos_meta 0.6.11",
  "tracing",
 ]
 
@@ -2631,13 +2647,45 @@ dependencies = [
  "js-sys",
  "lazy_static",
  "leptos 0.5.7",
- "leptos_integration_utils",
+ "leptos_integration_utils 0.5.7",
  "leptos_meta 0.5.7",
  "linear-map",
  "lru 0.11.1",
  "once_cell",
  "percent-encoding",
  "regex",
+ "serde",
+ "serde_json",
+ "serde_qs",
+ "thiserror",
+ "tracing",
+ "url",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "leptos_router"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d7fcc2a95a20c8f41adb39770e65c48ffe33cd9503b83669c54edd9b33ba8aa8"
+dependencies = [
+ "cached",
+ "cfg-if",
+ "gloo-net 0.5.0",
+ "itertools 0.12.0",
+ "js-sys",
+ "lazy_static",
+ "leptos 0.6.11",
+ "leptos_integration_utils 0.6.11",
+ "leptos_meta 0.6.11",
+ "linear-map",
+ "lru 0.11.1",
+ "once_cell",
+ "percent-encoding",
+ "regex",
+ "send_wrapper",
  "serde",
  "serde_json",
  "serde_qs",
@@ -4275,6 +4323,7 @@ version = "0.6.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "536a5b959673643ee01e59ae41bf01425482c8070dee95d7061ee2d45296b59c"
 dependencies = [
+ "actix-web",
  "bytes",
  "ciborium",
  "const_format",
