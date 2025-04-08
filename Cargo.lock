@@ -395,7 +395,7 @@ dependencies = [
  "leptos 0.5.7",
  "leptos_actix",
  "leptos_meta 0.6.11",
- "leptos_router",
+ "leptos_router 0.6.11",
  "lettre",
  "serde",
  "sha2",
@@ -2343,9 +2343,9 @@ dependencies = [
  "actix-web",
  "futures",
  "leptos 0.5.7",
- "leptos_integration_utils",
+ "leptos_integration_utils 0.5.7",
  "leptos_meta 0.5.7",
- "leptos_router",
+ "leptos_router 0.5.7",
  "parking_lot",
  "regex",
  "serde_json",
@@ -2486,6 +2486,20 @@ dependencies = [
  "leptos_config 0.5.7",
  "leptos_hot_reload 0.5.7",
  "leptos_meta 0.5.7",
+ "tracing",
+]
+
+[[package]]
+name = "leptos_integration_utils"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1f504afe3e2ac30ca15ba9b74d27243e8919e93d1f78bad32e5e8ec23eaca4b"
+dependencies = [
+ "futures",
+ "leptos 0.6.11",
+ "leptos_config 0.6.11",
+ "leptos_hot_reload 0.6.11",
+ "leptos_meta 0.6.11",
  "tracing",
 ]
 
@@ -2631,13 +2645,45 @@ dependencies = [
  "js-sys",
  "lazy_static",
  "leptos 0.5.7",
- "leptos_integration_utils",
+ "leptos_integration_utils 0.5.7",
  "leptos_meta 0.5.7",
  "linear-map",
  "lru 0.11.1",
  "once_cell",
  "percent-encoding",
  "regex",
+ "serde",
+ "serde_json",
+ "serde_qs",
+ "thiserror",
+ "tracing",
+ "url",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "leptos_router"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d7fcc2a95a20c8f41adb39770e65c48ffe33cd9503b83669c54edd9b33ba8aa8"
+dependencies = [
+ "cached",
+ "cfg-if",
+ "gloo-net 0.5.0",
+ "itertools 0.12.0",
+ "js-sys",
+ "lazy_static",
+ "leptos 0.6.11",
+ "leptos_integration_utils 0.6.11",
+ "leptos_meta 0.6.11",
+ "linear-map",
+ "lru 0.11.1",
+ "once_cell",
+ "percent-encoding",
+ "regex",
+ "send_wrapper",
  "serde",
  "serde_json",
  "serde_qs",
